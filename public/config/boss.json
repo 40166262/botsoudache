@@ -2,8 +2,8 @@
  {
   "id": "boss_vine_golem",
   "name": "藤蔓巨像·咕噜噜",
-  "hp": 3600,
-  "atk": 18,
+  "hp": 3300,
+  "atk": 16,
   "move_speed": 0.4,
   "drop_chest": "chest_boss",
   "first_clear_reward": {

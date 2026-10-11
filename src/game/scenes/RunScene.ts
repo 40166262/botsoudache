@@ -334,7 +334,7 @@ export class RunScene extends Phaser.Scene {
   buildFx() {
     this.particles = this.add.particles(0, 0, 'dot', { lifespan: 300, speed: { min: 140, max: 320 }, scale: { start: 0.9, end: 0.1 }, alpha: { start: 1, end: 0 }, emitting: false }).setDepth(9000);
     this.sparkP = this.add.particles(0, 0, 'spark', { lifespan: 220, speed: { min: 40, max: 120 }, scale: { start: 1, end: 0 }, emitting: false, blendMode: 'ADD' }).setDepth(9001);
-    this.heroSh = this.add.image(this.px, this.py, 'shadow').setScale(1.1);
+    this.heroSh = this.add.image(this.px, this.py, 'shadow').setScale(1.35, 1.2);
     this.hero = this.add.sprite(this.px, this.py, 'chr_player_idle_01').setOrigin(0.5, 120 / 128).play('hero_idle') as any;
     this.joyBase = this.add.image(0, 0, 'joy_base').setScrollFactor(0).setDepth(20000).setAlpha(0);
     this.joyKnob = this.add.image(0, 0, 'joy_knob').setScrollFactor(0).setDepth(20001).setAlpha(0);
@@ -606,7 +606,8 @@ export class RunScene extends Phaser.Scene {
     this.heroLean += (lean - this.heroLean) * (1 - Math.exp(-dt * 16));
     hs.setFlipX(this.facing < 0).setDepth(this.py).setRotation(this.heroLean); if (!this.extracting) hs.setPosition(this.px, this.py);
     const breathe = this.moving ? 1 : 1 + Math.sin(this.now * 3) * 0.015;
-    hs.setScale(1 / breathe, breathe);
+    const HS = 1.25; // 主角显示放大 1.25 倍（碰撞半径不变）
+    hs.setScale(HS / breathe, HS * breathe);
     this.heroSh.setPosition(this.px, this.py + 2).setDepth(this.py - 1);
     if (this.invT > 0) { this.invT -= dt; this.hero.setAlpha(Math.floor(this.invT * 20) % 2 ? 0.45 : 1); } else this.hero.setAlpha(1);
     if (this.hurtFlash > 0) { this.hurtFlash -= dt; this.hero.setTintFill(0xff3b3b); if (Math.floor(this.hurtFlash / 0.08) % 2) this.hero.clearTint(); } else this.hero.clearTint();
@@ -1097,7 +1098,7 @@ export class RunScene extends Phaser.Scene {
   }
   rollTreasure(minRarity: Rarity | null, depth: boolean, weights?: Record<string, number>): BagItem {
     let r: Rarity = minRarity ?? 'common';
-    if (weights) r = this.rng.weighted(weights) as Rarity;
+    if (weights) { r = this.rng.weighted(weights) as Rarity; if (minRarity && RARITY_ORDER.indexOf(r) < RARITY_ORDER.indexOf(minRarity)) r = minRarity; } // 保底品质不被权重覆盖
     if (this.seekerUp && this.rng.chance(this.seekerUp)) r = RARITY_ORDER[Math.min(4, RARITY_ORDER.indexOf(r) + 1)];
     let pool = Cfg.treasure.filter((t) => t.region === 'garden' && t.rarity === r);
     while (!pool.length) { r = RARITY_ORDER[RARITY_ORDER.indexOf(r) - 1]; pool = Cfg.treasure.filter((t) => t.region === 'garden' && t.rarity === r); } // 区域没有该品质时降档

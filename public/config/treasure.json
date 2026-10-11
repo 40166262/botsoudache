@@ -43,5 +43,50 @@
   "region": "garden",
   "set_id": "",
   "icon": "icon_tr_fairy_harp"
+ },
+ {
+  "id": "tr_hourglass_shard",
+  "name": "沙漏碎片",
+  "rarity": "common",
+  "base_value": 12,
+  "region": "shrine",
+  "set_id": "",
+  "icon": "icon_tr_hourglass_shard"
+ },
+ {
+  "id": "tr_cat_idol",
+  "name": "猫神小雕像",
+  "rarity": "uncommon",
+  "base_value": 35,
+  "region": "shrine",
+  "set_id": "set_shrine",
+  "icon": "icon_tr_cat_idol"
+ },
+ {
+  "id": "tr_golden_scarab",
+  "name": "黄金圣甲虫",
+  "rarity": "rare",
+  "base_value": 110,
+  "region": "shrine",
+  "set_id": "set_shrine",
+  "icon": "icon_tr_golden_scarab"
+ },
+ {
+  "id": "tr_pharaoh_collar",
+  "name": "法老猫的项圈",
+  "rarity": "epic",
+  "base_value": 380,
+  "region": "shrine",
+  "set_id": "set_shrine",
+  "icon": "icon_tr_pharaoh_collar"
+ },
+ {
+  "id": "tr_sun_scepter",
+  "name": "太阳权杖",
+  "rarity": "legend",
+  "base_value": 1200,
+  "region": "shrine",
+  "set_id": "",
+  "icon": "icon_tr_sun_scepter"
  }
 ]

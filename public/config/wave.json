@@ -23,7 +23,7 @@
   "wave_group": "wg_garden_1",
   "t_start": 0,
   "t_end": 20,
-  "spawn_per_10s": 8,
+  "spawn_per_10s": 7,
   "monster_weights": {
    "mon_slime": 100
   },
@@ -33,7 +33,7 @@
   "wave_group": "wg_garden_1",
   "t_start": 20,
   "t_end": 999,
-  "spawn_per_10s": 13,
+  "spawn_per_10s": 11,
   "monster_weights": {
    "mon_slime": 70,
    "mon_bat": 30
@@ -44,22 +44,19 @@
   "wave_group": "wg_garden_2",
   "t_start": 0,
   "t_end": 30,
-  "spawn_per_10s": 18,
+  "spawn_per_10s": 16,
   "monster_weights": {
    "mon_slime": 45,
    "mon_bat": 30,
    "mon_archer": 25
   },
-  "elite_at": [
-   15,
-   28
-  ]
+  "elite_at": []
  },
  {
   "wave_group": "wg_garden_2",
   "t_start": 30,
   "t_end": 999,
-  "spawn_per_10s": 22,
+  "spawn_per_10s": 20,
   "monster_weights": {
    "mon_slime": 40,
    "mon_bat": 30,
@@ -67,8 +64,10 @@
    "mon_golem": 10
   },
   "elite_at": [
-   42,
-   55
+   30,
+   38,
+   46,
+   54
   ]
  }
 ]
