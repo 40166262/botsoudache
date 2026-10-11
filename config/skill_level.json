@@ -1,0 +1,867 @@
+[
+ {
+  "skill_id": "skill_boomerang",
+  "level": 1,
+  "cooldown": 2,
+  "dmg_pct": 1.2,
+  "count": 1,
+  "range": 5,
+  "duration": 0,
+  "extra": {
+   "pierce": true,
+   "return": true
+  }
+ },
+ {
+  "skill_id": "skill_petal",
+  "level": 1,
+  "cooldown": 0.5,
+  "dmg_pct": 0.6,
+  "count": 2,
+  "range": 1.5,
+  "duration": 0,
+  "extra": {
+   "hit_interval": 0.5,
+   "rot_speed": 3.2
+  }
+ },
+ {
+  "skill_id": "skill_thunder",
+  "level": 1,
+  "cooldown": 3,
+  "dmg_pct": 1.5,
+  "count": 2,
+  "range": 7,
+  "duration": 0.3,
+  "extra": {
+   "stun": 0.3
+  }
+ },
+ {
+  "skill_id": "skill_frost",
+  "level": 1,
+  "cooldown": 5.0,
+  "dmg_pct": 0.8,
+  "count": 1,
+  "range": 2.5,
+  "duration": 2,
+  "extra": {
+   "slow": 0.4
+  }
+ },
+ {
+  "skill_id": "skill_fire",
+  "level": 1,
+  "cooldown": 0.25,
+  "dmg_pct": 0.3,
+  "count": 1,
+  "range": 0.6,
+  "duration": 2.0,
+  "extra": {
+   "tick": 0.5
+  }
+ },
+ {
+  "skill_id": "skill_bubble",
+  "level": 1,
+  "cooldown": 2.5,
+  "dmg_pct": 0.9,
+  "count": 4,
+  "range": 4,
+  "duration": 0,
+  "extra": {
+   "speed": 7
+  }
+ },
+ {
+  "skill_id": "skill_boots",
+  "level": 1,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.1
+  }
+ },
+ {
+  "skill_id": "skill_beat",
+  "level": 1,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.08
+  }
+ },
+ {
+  "skill_id": "skill_magnet",
+  "level": 1,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.4
+  }
+ },
+ {
+  "skill_id": "skill_tough",
+  "level": 1,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.15,
+   "heal": 0.15
+  }
+ },
+ {
+  "skill_id": "skill_clover",
+  "level": 1,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.08
+  }
+ },
+ {
+  "skill_id": "skill_seeker",
+  "level": 1,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.2,
+   "v2": 0.05
+  }
+ },
+ {
+  "skill_id": "skill_greed",
+  "level": 1,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.25,
+   "v2": 0.1
+  }
+ },
+ {
+  "skill_id": "skill_leech",
+  "level": 1,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 1
+  }
+ },
+ {
+  "skill_id": "skill_boomerang",
+  "level": 2,
+  "cooldown": 2,
+  "dmg_pct": 1.4,
+  "count": 1,
+  "range": 5,
+  "duration": 0,
+  "extra": {
+   "pierce": true,
+   "return": true
+  }
+ },
+ {
+  "skill_id": "skill_petal",
+  "level": 2,
+  "cooldown": 0.5,
+  "dmg_pct": 0.7,
+  "count": 3,
+  "range": 1.5,
+  "duration": 0,
+  "extra": {
+   "hit_interval": 0.5,
+   "rot_speed": 3.2
+  }
+ },
+ {
+  "skill_id": "skill_thunder",
+  "level": 2,
+  "cooldown": 3,
+  "dmg_pct": 1.65,
+  "count": 3,
+  "range": 7,
+  "duration": 0.3,
+  "extra": {
+   "stun": 0.3
+  }
+ },
+ {
+  "skill_id": "skill_frost",
+  "level": 2,
+  "cooldown": 4.7,
+  "dmg_pct": 1.0,
+  "count": 1,
+  "range": 2.8,
+  "duration": 2,
+  "extra": {
+   "slow": 0.4
+  }
+ },
+ {
+  "skill_id": "skill_fire",
+  "level": 2,
+  "cooldown": 0.25,
+  "dmg_pct": 0.38,
+  "count": 1,
+  "range": 0.6,
+  "duration": 2.5,
+  "extra": {
+   "tick": 0.5
+  }
+ },
+ {
+  "skill_id": "skill_bubble",
+  "level": 2,
+  "cooldown": 2.5,
+  "dmg_pct": 1.0,
+  "count": 5,
+  "range": 4,
+  "duration": 0,
+  "extra": {
+   "speed": 7
+  }
+ },
+ {
+  "skill_id": "skill_boots",
+  "level": 2,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.2
+  }
+ },
+ {
+  "skill_id": "skill_beat",
+  "level": 2,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.16
+  }
+ },
+ {
+  "skill_id": "skill_magnet",
+  "level": 2,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.8
+  }
+ },
+ {
+  "skill_id": "skill_tough",
+  "level": 2,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.3,
+   "heal": 0.15
+  }
+ },
+ {
+  "skill_id": "skill_clover",
+  "level": 2,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.16
+  }
+ },
+ {
+  "skill_id": "skill_seeker",
+  "level": 2,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.4,
+   "v2": 0.1
+  }
+ },
+ {
+  "skill_id": "skill_greed",
+  "level": 2,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.35,
+   "v2": 0.15000000000000002
+  }
+ },
+ {
+  "skill_id": "skill_leech",
+  "level": 2,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 2
+  }
+ },
+ {
+  "skill_id": "skill_boomerang",
+  "level": 3,
+  "cooldown": 2,
+  "dmg_pct": 1.6,
+  "count": 2,
+  "range": 5,
+  "duration": 0,
+  "extra": {
+   "pierce": true,
+   "return": true
+  }
+ },
+ {
+  "skill_id": "skill_petal",
+  "level": 3,
+  "cooldown": 0.5,
+  "dmg_pct": 0.8,
+  "count": 4,
+  "range": 1.5,
+  "duration": 0,
+  "extra": {
+   "hit_interval": 0.5,
+   "rot_speed": 3.2
+  }
+ },
+ {
+  "skill_id": "skill_thunder",
+  "level": 3,
+  "cooldown": 3,
+  "dmg_pct": 1.8,
+  "count": 4,
+  "range": 7,
+  "duration": 0.3,
+  "extra": {
+   "stun": 0.3
+  }
+ },
+ {
+  "skill_id": "skill_frost",
+  "level": 3,
+  "cooldown": 4.4,
+  "dmg_pct": 1.2000000000000002,
+  "count": 1,
+  "range": 3.1,
+  "duration": 2,
+  "extra": {
+   "slow": 0.4
+  }
+ },
+ {
+  "skill_id": "skill_fire",
+  "level": 3,
+  "cooldown": 0.25,
+  "dmg_pct": 0.45999999999999996,
+  "count": 1,
+  "range": 0.6,
+  "duration": 3.0,
+  "extra": {
+   "tick": 0.5
+  }
+ },
+ {
+  "skill_id": "skill_bubble",
+  "level": 3,
+  "cooldown": 2.5,
+  "dmg_pct": 1.1,
+  "count": 6,
+  "range": 4,
+  "duration": 0,
+  "extra": {
+   "speed": 7
+  }
+ },
+ {
+  "skill_id": "skill_boots",
+  "level": 3,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.30000000000000004
+  }
+ },
+ {
+  "skill_id": "skill_beat",
+  "level": 3,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.24
+  }
+ },
+ {
+  "skill_id": "skill_magnet",
+  "level": 3,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 1.2000000000000002
+  }
+ },
+ {
+  "skill_id": "skill_tough",
+  "level": 3,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.44999999999999996,
+   "heal": 0.15
+  }
+ },
+ {
+  "skill_id": "skill_clover",
+  "level": 3,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.24
+  }
+ },
+ {
+  "skill_id": "skill_seeker",
+  "level": 3,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.6000000000000001,
+   "v2": 0.15000000000000002
+  }
+ },
+ {
+  "skill_id": "skill_greed",
+  "level": 3,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.45,
+   "v2": 0.2
+  }
+ },
+ {
+  "skill_id": "skill_leech",
+  "level": 3,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 3
+  }
+ },
+ {
+  "skill_id": "skill_boomerang",
+  "level": 4,
+  "cooldown": 2,
+  "dmg_pct": 1.8,
+  "count": 2,
+  "range": 5,
+  "duration": 0,
+  "extra": {
+   "pierce": true,
+   "return": true
+  }
+ },
+ {
+  "skill_id": "skill_petal",
+  "level": 4,
+  "cooldown": 0.5,
+  "dmg_pct": 0.9,
+  "count": 5,
+  "range": 1.5,
+  "duration": 0,
+  "extra": {
+   "hit_interval": 0.5,
+   "rot_speed": 3.2
+  }
+ },
+ {
+  "skill_id": "skill_thunder",
+  "level": 4,
+  "cooldown": 3,
+  "dmg_pct": 1.95,
+  "count": 5,
+  "range": 7,
+  "duration": 0.3,
+  "extra": {
+   "stun": 0.3
+  }
+ },
+ {
+  "skill_id": "skill_frost",
+  "level": 4,
+  "cooldown": 4.1,
+  "dmg_pct": 1.4000000000000001,
+  "count": 1,
+  "range": 3.4,
+  "duration": 2,
+  "extra": {
+   "slow": 0.4
+  }
+ },
+ {
+  "skill_id": "skill_fire",
+  "level": 4,
+  "cooldown": 0.25,
+  "dmg_pct": 0.54,
+  "count": 1,
+  "range": 0.6,
+  "duration": 3.5,
+  "extra": {
+   "tick": 0.5
+  }
+ },
+ {
+  "skill_id": "skill_bubble",
+  "level": 4,
+  "cooldown": 2.5,
+  "dmg_pct": 1.2000000000000002,
+  "count": 7,
+  "range": 4,
+  "duration": 0,
+  "extra": {
+   "speed": 7
+  }
+ },
+ {
+  "skill_id": "skill_boots",
+  "level": 4,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.4
+  }
+ },
+ {
+  "skill_id": "skill_beat",
+  "level": 4,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.32
+  }
+ },
+ {
+  "skill_id": "skill_magnet",
+  "level": 4,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 1.6
+  }
+ },
+ {
+  "skill_id": "skill_tough",
+  "level": 4,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.6,
+   "heal": 0.15
+  }
+ },
+ {
+  "skill_id": "skill_clover",
+  "level": 4,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.32
+  }
+ },
+ {
+  "skill_id": "skill_seeker",
+  "level": 4,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.8,
+   "v2": 0.2
+  }
+ },
+ {
+  "skill_id": "skill_greed",
+  "level": 4,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.55,
+   "v2": 0.25
+  }
+ },
+ {
+  "skill_id": "skill_leech",
+  "level": 4,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 4
+  }
+ },
+ {
+  "skill_id": "skill_boomerang",
+  "level": 5,
+  "cooldown": 2,
+  "dmg_pct": 2.0,
+  "count": 3,
+  "range": 5,
+  "duration": 0,
+  "extra": {
+   "pierce": true,
+   "return": true
+  }
+ },
+ {
+  "skill_id": "skill_petal",
+  "level": 5,
+  "cooldown": 0.5,
+  "dmg_pct": 1.0,
+  "count": 6,
+  "range": 1.5,
+  "duration": 0,
+  "extra": {
+   "hit_interval": 0.5,
+   "rot_speed": 3.2
+  }
+ },
+ {
+  "skill_id": "skill_thunder",
+  "level": 5,
+  "cooldown": 3,
+  "dmg_pct": 2.1,
+  "count": 6,
+  "range": 7,
+  "duration": 0.3,
+  "extra": {
+   "stun": 0.3
+  }
+ },
+ {
+  "skill_id": "skill_frost",
+  "level": 5,
+  "cooldown": 3.8,
+  "dmg_pct": 1.6,
+  "count": 1,
+  "range": 3.7,
+  "duration": 2,
+  "extra": {
+   "slow": 0.4
+  }
+ },
+ {
+  "skill_id": "skill_fire",
+  "level": 5,
+  "cooldown": 0.25,
+  "dmg_pct": 0.62,
+  "count": 1,
+  "range": 0.6,
+  "duration": 4.0,
+  "extra": {
+   "tick": 0.5
+  }
+ },
+ {
+  "skill_id": "skill_bubble",
+  "level": 5,
+  "cooldown": 2.5,
+  "dmg_pct": 1.3,
+  "count": 8,
+  "range": 4,
+  "duration": 0,
+  "extra": {
+   "speed": 7
+  }
+ },
+ {
+  "skill_id": "skill_boots",
+  "level": 5,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.5
+  }
+ },
+ {
+  "skill_id": "skill_beat",
+  "level": 5,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.4
+  }
+ },
+ {
+  "skill_id": "skill_magnet",
+  "level": 5,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 2.0
+  }
+ },
+ {
+  "skill_id": "skill_tough",
+  "level": 5,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.75,
+   "heal": 0.15
+  }
+ },
+ {
+  "skill_id": "skill_clover",
+  "level": 5,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.4
+  }
+ },
+ {
+  "skill_id": "skill_seeker",
+  "level": 5,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 1.0,
+   "v2": 0.25
+  }
+ },
+ {
+  "skill_id": "skill_greed",
+  "level": 5,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 0.65,
+   "v2": 0.30000000000000004
+  }
+ },
+ {
+  "skill_id": "skill_leech",
+  "level": 5,
+  "cooldown": 0,
+  "dmg_pct": 0,
+  "count": 0,
+  "range": 0,
+  "duration": 0,
+  "extra": {
+   "v": 5
+  }
+ }
+]

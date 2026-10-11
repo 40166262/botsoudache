@@ -1,0 +1,42 @@
+[
+ {
+  "id": "it_potion",
+  "name": "回复药水",
+  "effect": {
+   "heal_pct": 0.4
+  },
+  "carry_rule": "slot",
+  "shop_price": 50,
+  "icon": "icon_potion"
+ },
+ {
+  "id": "it_bomb",
+  "name": "萌萌炸弹",
+  "effect": {
+   "delay": 1,
+   "radius": 3,
+   "dmg_pct": 5
+  },
+  "carry_rule": "slot",
+  "shop_price": 80,
+  "icon": "icon_bomb"
+ },
+ {
+  "id": "it_shield",
+  "name": "泡泡护盾",
+  "effect": {
+   "invuln_sec": 5
+  },
+  "carry_rule": "slot",
+  "shop_price": 0,
+  "icon": "icon_shield"
+ },
+ {
+  "id": "it_scroll",
+  "name": "撤离卷轴",
+  "effect": {},
+  "carry_rule": "scroll",
+  "shop_price": 0,
+  "icon": "icon_scroll_evac"
+ }
+]

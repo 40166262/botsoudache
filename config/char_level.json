@@ -1,0 +1,246 @@
+[
+ {
+  "level": 1,
+  "gold_cost": 100,
+  "shard_cost": 3,
+  "hp": 100.0,
+  "atk": 10.0,
+  "reward": {}
+ },
+ {
+  "level": 2,
+  "gold_cost": 140,
+  "shard_cost": 4,
+  "hp": 108.0,
+  "atk": 10.8,
+  "reward": {}
+ },
+ {
+  "level": 3,
+  "gold_cost": 180,
+  "shard_cost": 5,
+  "hp": 116.0,
+  "atk": 11.6,
+  "reward": {}
+ },
+ {
+  "level": 4,
+  "gold_cost": 250,
+  "shard_cost": 6,
+  "hp": 124.0,
+  "atk": 12.4,
+  "reward": {}
+ },
+ {
+  "level": 5,
+  "gold_cost": 330,
+  "shard_cost": 8,
+  "hp": 132.0,
+  "atk": 13.2,
+  "reward": {
+   "backpack_slot": 1
+  }
+ },
+ {
+  "level": 6,
+  "gold_cost": 450,
+  "shard_cost": 10,
+  "hp": 140.0,
+  "atk": 14.0,
+  "reward": {}
+ },
+ {
+  "level": 7,
+  "gold_cost": 610,
+  "shard_cost": 12,
+  "hp": 148.0,
+  "atk": 14.8,
+  "reward": {}
+ },
+ {
+  "level": 8,
+  "gold_cost": 820,
+  "shard_cost": 15,
+  "hp": 156.0,
+  "atk": 15.6,
+  "reward": {}
+ },
+ {
+  "level": 9,
+  "gold_cost": 1100,
+  "shard_cost": 18,
+  "hp": 164.0,
+  "atk": 16.4,
+  "reward": {}
+ },
+ {
+  "level": 10,
+  "gold_cost": 1490,
+  "shard_cost": 23,
+  "hp": 172.0,
+  "atk": 17.2,
+  "reward": {
+   "safe_slot": 1
+  }
+ },
+ {
+  "level": 11,
+  "gold_cost": 1910,
+  "shard_cost": 27,
+  "hp": 180.0,
+  "atk": 18.0,
+  "reward": {}
+ },
+ {
+  "level": 12,
+  "gold_cost": 2440,
+  "shard_cost": 31,
+  "hp": 188.0,
+  "atk": 18.8,
+  "reward": {}
+ },
+ {
+  "level": 13,
+  "gold_cost": 3120,
+  "shard_cost": 35,
+  "hp": 196.0,
+  "atk": 19.6,
+  "reward": {}
+ },
+ {
+  "level": 14,
+  "gold_cost": 4000,
+  "shard_cost": 41,
+  "hp": 204.0,
+  "atk": 20.4,
+  "reward": {}
+ },
+ {
+  "level": 15,
+  "gold_cost": 5120,
+  "shard_cost": 47,
+  "hp": 212.0,
+  "atk": 21.2,
+  "reward": {}
+ },
+ {
+  "level": 16,
+  "gold_cost": 6550,
+  "shard_cost": 54,
+  "hp": 220.0,
+  "atk": 22.0,
+  "reward": {}
+ },
+ {
+  "level": 17,
+  "gold_cost": 8390,
+  "shard_cost": 62,
+  "hp": 228.0,
+  "atk": 22.8,
+  "reward": {}
+ },
+ {
+  "level": 18,
+  "gold_cost": 10740,
+  "shard_cost": 71,
+  "hp": 236.0,
+  "atk": 23.6,
+  "reward": {}
+ },
+ {
+  "level": 19,
+  "gold_cost": 13740,
+  "shard_cost": 81,
+  "hp": 244.0,
+  "atk": 24.4,
+  "reward": {}
+ },
+ {
+  "level": 20,
+  "gold_cost": 17590,
+  "shard_cost": 94,
+  "hp": 252.0,
+  "atk": 25.2,
+  "reward": {}
+ },
+ {
+  "level": 21,
+  "gold_cost": 22520,
+  "shard_cost": 108,
+  "hp": 260.0,
+  "atk": 26.0,
+  "reward": {}
+ },
+ {
+  "level": 22,
+  "gold_cost": 28820,
+  "shard_cost": 124,
+  "hp": 268.0,
+  "atk": 26.8,
+  "reward": {}
+ },
+ {
+  "level": 23,
+  "gold_cost": 36890,
+  "shard_cost": 142,
+  "hp": 276.0,
+  "atk": 27.6,
+  "reward": {}
+ },
+ {
+  "level": 24,
+  "gold_cost": 47220,
+  "shard_cost": 163,
+  "hp": 284.0,
+  "atk": 28.4,
+  "reward": {}
+ },
+ {
+  "level": 25,
+  "gold_cost": 60440,
+  "shard_cost": 188,
+  "hp": 292.0,
+  "atk": 29.2,
+  "reward": {}
+ },
+ {
+  "level": 26,
+  "gold_cost": 77370,
+  "shard_cost": 216,
+  "hp": 300.0,
+  "atk": 30.0,
+  "reward": {}
+ },
+ {
+  "level": 27,
+  "gold_cost": 99030,
+  "shard_cost": 248,
+  "hp": 308.0,
+  "atk": 30.8,
+  "reward": {}
+ },
+ {
+  "level": 28,
+  "gold_cost": 126760,
+  "shard_cost": 285,
+  "hp": 316.0,
+  "atk": 31.6,
+  "reward": {}
+ },
+ {
+  "level": 29,
+  "gold_cost": 162250,
+  "shard_cost": 328,
+  "hp": 324.0,
+  "atk": 32.4,
+  "reward": {}
+ },
+ {
+  "level": 30,
+  "gold_cost": 207680,
+  "shard_cost": 377,
+  "hp": 332.0,
+  "atk": 33.2,
+  "reward": {}
+ }
+]

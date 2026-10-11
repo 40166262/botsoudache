@@ -1,0 +1,201 @@
+{
+ "platform": "taptap_h5",
+ "enabled_regions": [
+  "garden",
+  "shrine"
+ ],
+ "enabled_ad_placements": [
+  "A1",
+  "A2",
+  "A3",
+  "A6",
+  "B1"
+ ],
+ "death_keep_treasure_ratio": 0,
+ "death_keep_material_ratio": 0,
+ "death_keep_blueprint_ratio": 0,
+ "death_keep_run_gold_ratio": 0.5,
+ "death_return_carried_ratio": 0,
+ "death_keep_account_exp_ratio": 1.0,
+ "death_pity_shard_min": 1,
+ "death_pity_shard_max": 2,
+ "newbie_protect_runs": 3,
+ "ad_rescue_items": 1,
+ "backpack_base": 6,
+ "backpack_perm_cap": 10,
+ "backpack_run_cap": 12,
+ "safe_base": 1,
+ "safe_cap": 3,
+ "material_stack_max": 30,
+ "auto_safe_slot": true,
+ "full_popup_timescale": 0.3,
+ "full_popup_sec": 2,
+ "full_popup_default": "discard_new",
+ "portal_radius": 1.5,
+ "portal_channel_sec": 3,
+ "stairs_channel_sec": 1,
+ "portal_open_at": 15,
+ "portal_min_dist": 6,
+ "emergency_exit_rate": 0.5,
+ "emergency_exit_open_sec": 20,
+ "scroll_carry_max": 1,
+ "scroll_channel_sec": 5,
+ "boss_allow_scroll": true,
+ "boss_enrage1_sec": 90,
+ "boss_enrage2_sec": 150,
+ "floor_time_sec": 60,
+ "tutorial_floor_time_sec": 90,
+ "depth_value_step": 0.3,
+ "depth_monster_mul": 1.25,
+ "run_exp_a": 5,
+ "run_exp_b": 3,
+ "settle_gold_cap": {
+  "garden": 1000,
+  "shrine": 4000,
+  "castle": 13000
+ },
+ "ad_double_cap": {
+  "garden": 400,
+  "shrine": 1600,
+  "castle": 5000
+ },
+ "max_enemies": 120,
+ "max_enemies_low": 80,
+ "settled_run_ids_keep": 20,
+ "_cell_px": 64,
+ "_player_base_hp": 100,
+ "_player_base_atk": 10,
+ "_player_speed_cells": 4,
+ "_base_crit": 0.05,
+ "_crit_mul": 1.5,
+ "_slingshot_cd": 0.8,
+ "_pickup_radius": 2,
+ "_active_max": 4,
+ "_passive_max": 4,
+ "_skill_new_vs_upgrade": [
+  1,
+  1.5
+ ],
+ "_revive_hp_pct": 0.5,
+ "_revive_invuln_sec": 2,
+ "_collapse_guardian_speed": 0.9,
+ "_collapse_guardian_accel": 0.1,
+ "_collapse_guardian_dmg_pct": 0.4,
+ "_collapse_rock_interval": 1.2,
+ "_collapse_rock_dmg": 15,
+ "_thief_rate": 0.3,
+ "_mimic_rate": 0.1,
+ "_pot_count": 8,
+ "_pot_heart_rate": 0.05,
+ "_pot_magnet_rate": 0.02,
+ "_pot_gold": [
+  1,
+  3
+ ],
+ "_elite_hp_mul": 6,
+ "_elite_atk_mul": 1.5,
+ "_elite_scale": 1.3,
+ "_elite_exp": 10,
+ "_ad_units": {
+  "A1": "",
+  "A2": "",
+  "A3": "",
+  "A4": "",
+  "A5": ""
+ },
+ "_player_iframe_sec": 0.4,
+ "_chest_open_dist": 1.1,
+ "_slingshot_range": 7,
+ "_bullet_speed": 12,
+ "_thief_steal_window": 15,
+ "_carry_default": {
+  "it_potion": 2,
+  "it_bomb": 1,
+  "it_scroll": 1
+ },
+ "ad_quiet_first_sec": 60,
+ "ad_block_in_tutorial": true,
+ "tutorial_hp_lock": true,
+ "ad_cut_priority": [
+  "A7",
+  "A5",
+  "A4",
+  "A9",
+  "A8",
+  "A6",
+  "signin_makeup",
+  "A3"
+ ],
+ "char_level_cap": 30,
+ "char_gold_formula": {
+  "lt10": [
+   100,
+   1.35
+  ],
+  "ge10": [
+   1490,
+   1.28
+  ]
+ },
+ "char_shard_formula": {
+  "lt10": [
+   3,
+   1.25
+  ],
+  "ge10": [
+   23,
+   1.15
+  ]
+ },
+ "equip_craft_cost": {
+  "white": [
+   200,
+   0
+  ],
+  "green": [
+   1000,
+   0
+  ],
+  "blue": [
+   4000,
+   5
+  ],
+  "purple": [
+   12000,
+   15
+  ],
+  "gold": [
+   30000,
+   40
+  ]
+ },
+ "equip_enhance_formula": {
+  "base": 800,
+  "growth": 1.22,
+  "crystal_from": 10,
+  "crystal_step": 2,
+  "max": 20
+ },
+ "equip_enhance_inherit": true,
+ "daily_reward_gold_by_region": {
+  "garden": 300,
+  "shrine": 750,
+  "castle": 1800
+ },
+ "invite_mode": "share_only",
+ "legend_ignore_depth_and_cap": true,
+ "tutorial_wave_group": "wg_tutorial",
+ "tutorial_chests": {
+  "chest_wood": 3
+ },
+ "tutorial_monster_atk_mul": 0.42,
+ "tutorial_split_rate": 0,
+ "tutorial_first_chest_rarity": "uncommon",
+ "first_chest_near_spawn": [
+  4,
+  6
+ ],
+ "mimic_min_floor": 2,
+ "chest_hint_radius_cells": 12,
+ "boss_enrage_hp_pct": 0.4
+}

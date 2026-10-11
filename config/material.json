@@ -1,0 +1,17 @@
+[
+ {
+  "id": "shard",
+  "name": "遗迹碎片",
+  "icon": "icon_relic_shard"
+ },
+ {
+  "id": "iron",
+  "name": "精铁",
+  "icon": "icon_iron"
+ },
+ {
+  "id": "crystal",
+  "name": "魔晶",
+  "icon": "icon_mana_crystal"
+ }
+]
