@@ -421,7 +421,7 @@ export class RunScene extends Phaser.Scene {
     g.fillStyle(s.safe ? 0x274f8f : 0x9b7a52); g.fillRoundedRect(s.x - 33, s.y - 33, 66, 66, 9);
     if (rar) { g.lineStyle(4, RARITY_COLOR[rar], 1); g.strokeRoundedRect(s.x - 33, s.y - 33, 66, 66, 9); }
     if (flash) { g.fillStyle(flash, 0.7); g.fillRoundedRect(s.x - 38, s.y - 38, 76, 76, 11); }
-    if (it) { s.ic.setTexture(this.itemIcon(it)).setVisible(true).setDisplaySize(62, 62); s.n.setText(it.kind === 'material' && it.count > 1 ? String(it.count) : it.kind === 'treasure' ? fmt(it.value ?? 0) : ''); s.n.setFontSize(it.kind === 'treasure' ? 18 : 22); }
+    if (it) { s.ic.setTexture(this.itemIcon(it)).setVisible(true).setDisplaySize(76, 76); s.n.setText(it.kind === 'material' && it.count > 1 ? String(it.count) : it.kind === 'treasure' ? fmt(it.value ?? 0) : ''); s.n.setFontSize(it.kind === 'treasure' ? 18 : 22); }
     else { s.ic.setVisible(false); s.n.setText(''); }
     s.lock.setText(s.safe ? (it?.locked ? '🔒' : '🛡') : '');
   }
@@ -1009,7 +1009,7 @@ export class RunScene extends Phaser.Scene {
   // ======== 掉落 ========
   spawnDrop(kind: 'exp' | 'gold' | 'heart' | 'magnet', x: number, y: number, value: number) {
     const key = kind === 'exp' ? 'icon_exp_star' : kind === 'gold' ? 'icon_coin' : kind;
-    const sc = kind === 'exp' ? (value >= 50 ? 0.5 : value >= 10 ? 0.38 : 0.24) : kind === 'gold' ? 0.26 : 0.8;
+    const sc = 1.3 * (kind === 'exp' ? (value >= 50 ? 0.5 : value >= 10 ? 0.38 : 0.24) : kind === 'gold' ? 0.26 : 0.8);
     const spr = this.add.image(x, y, key).setScale(sc).setDepth(y);
     const a = Math.random() * Math.PI * 2, dd = this.rng.range(0.3, 0.8) * CELL;
     const d: Drop = { kind, spr, x, y, z: 0, value, st: 'bounce', t: 0, dur: (Cfg.juice.bounce_exp?.duration_ms ?? 300) / 1000, h: Cfg.juice.bounce_exp?.amplitude ?? 24, sx: x, sy: y, tx: clamp(x + Math.cos(a) * dd, 20, this.mapW - 20), ty: clamp(y + Math.sin(a) * dd, 20, this.mapH - 20), vx: 0, vy: 0, mt: 0 };
@@ -1017,7 +1017,7 @@ export class RunScene extends Phaser.Scene {
     this.drops.push(d); return d;
   }
   spawnItem(item: BagItem, x: number, y: number, delay = 0) {
-    const spr = this.add.image(x, y, this.itemIcon(item)).setScale(item.kind === 'treasure' ? 0.7 : 0.55).setDepth(y);
+    const spr = this.add.image(x, y, this.itemIcon(item)).setScale(item.kind === 'treasure' ? 0.72 : 0.55).setDepth(y);
     const a = -Math.PI / 2 + this.rng.range(-1.2, 1.2), dd = this.rng.range(0.8, 1.4) * CELL;
     const j = Cfg.juice.bounce_treasure;
     const d: Drop = { kind: 'item', spr, x, y, z: 0, value: item.value ?? 0, item, st: 'bounce', t: -delay, dur: (j?.duration_ms ?? 450) / 1000, h: j?.amplitude ?? 48, sx: x, sy: y, tx: clamp(x + Math.cos(a) * dd, 30, this.mapW - 30), ty: clamp(y + Math.sin(a) * dd * 0.6 + 30, 30, this.mapH - 30), vx: 0, vy: 0, mt: 0, fx: [] };
@@ -1096,6 +1096,9 @@ export class RunScene extends Phaser.Scene {
   }
   startMagnet(d: Drop) { d.st = 'mag'; d.mt = 0; }
   collect(d: Drop) {
+    // 拾取：图标在主角头顶放大弹一下再消失
+    const pop = this.add.image(this.px, this.py - 70, d.spr.texture.key).setScale(d.spr.scaleX).setDepth(this.py + 5);
+    this.tweens.add({ targets: pop, scale: d.spr.scaleX * 1.6, y: pop.y - 26, duration: 110, ease: 'Back.out', yoyo: true, hold: 30, onComplete: () => pop.destroy() });
     d.st = 'dead'; d.spr.destroy(); d.fx?.forEach((f: any) => f.destroy());
     this.sparkP.emitParticleAt(this.px, this.py - 50, 1);
     if (d.kind === 'exp') {
@@ -1150,10 +1153,10 @@ export class RunScene extends Phaser.Scene {
     }
     const slot = this.hud.slots.find((s: any) => s.safe === finalSafe && s.i === finalIdx);
     const rar = it.kind === 'treasure' ? this.treasureRarity(it.id) : null;
-    const done = () => { for (const s of this.hud.slots) this.drawSlot(s); if (slot) { this.drawSlot(slot, rar ? RARITY_COLOR[rar] : 0xffffff); this.time.delayedCall(140, () => this.drawSlot(slot)); } };
+    const done = () => { for (const s of this.hud.slots) this.drawSlot(s); if (slot) { this.drawSlot(slot, rar ? RARITY_COLOR[rar] : 0xffffff); this.time.delayedCall(140, () => this.drawSlot(slot)); const ic = slot.ic; this.tweens.killTweensOf(ic); const k = ic.scaleX; ic.setScale(k * 1.35); this.tweens.add({ targets: ic, scaleX: k, scaleY: k, duration: 220, ease: 'Back.out' }); } };
     if (fly && slot) {
       // 宝物飞向底栏对应格子
-      const cam = this.cameras.main; const ic = this.add.image(this.px - cam.scrollX, this.py - 60 - cam.scrollY, this.itemIcon(it)).setScrollFactor(0).setDepth(18000).setDisplaySize(70, 70);
+      const cam = this.cameras.main; const ic = this.add.image(this.px - cam.scrollX, this.py - 60 - cam.scrollY, this.itemIcon(it)).setScrollFactor(0).setDepth(18000).setDisplaySize(90, 90);
       this.tweens.add({ targets: ic, x: slot.x, y: slot.y, duration: 380, ease: 'Cubic.in', onComplete: () => { ic.destroy(); done(); Sfx.play('sfx_coin_pick', 0.7); } });
     } else done();
     if (rar && RARITY_ORDER.indexOf(rar) >= 3) this.nameBar(it);
@@ -1421,7 +1424,7 @@ export class RunScene extends Phaser.Scene {
     if (!this.bossStarted) { if (this.py < this.bossRoomY - 40) this.startBoss(); return; }
     const b = this.boss; if (!b || !b.alive) return;
     const gp = Cfg.gp;
-    const spdMul = this.bossT >= gp.boss_enrage1_sec ? 1.5 : 1; const sumMul = this.bossEnrage2() ? 2 : 1;
+    const enr1 = this.bossT >= gp.boss_enrage1_sec || (gp.boss_enrage_hp_pct != null && b.hp <= b.maxHp * gp.boss_enrage_hp_pct); const spdMul = enr1 ? 1.5 : 1; const sumMul = this.bossEnrage2() ? 2 : 1;
     for (const sk of Cfg.bossSkill.filter((s) => s.boss_id === b.boss!.id)) {
       if (b.hp / b.maxHp > sk.hp_below) continue;
       const key = 'bs_' + sk.skill_id; if (this.timers[key] === undefined) this.timers[key] = sk.cooldown * 0.5;
@@ -1431,7 +1434,7 @@ export class RunScene extends Phaser.Scene {
       this.castBoss(b, sk);
     }
     if (b.st === 'cast') { b.t2 -= dt; if (b.t2 <= 0) { b.st = 'move'; b.spr.setTexture('boss_vine_golem_idle'); } }
-    if (this.bossT >= gp.boss_enrage1_sec && !(this as any).enr1) { (this as any).enr1 = true; this.toast('咕噜噜狂暴了！攻速提升', '#ff9c9c'); b.spr.setTint(0xffb0a0); }
+    if (enr1 && !(this as any).enr1) { (this as any).enr1 = true; this.banner('咕噜噜狂暴了！', '攻速和召唤加快，注意躲开地面预警'); b.spr.setTint(0xffb0a0); this.juice.shake('shake_elite_die'); Sfx.play('sfx_explode', 0.6); this.pulse(b.spr, 1.15); }
     if (this.bossEnrage2() && !(this as any).enr2) { (this as any).enr2 = true; this.toast('咕噜噜彻底狂暴！伤害翻倍', '#ff5c5c'); }
   }
   startBoss() {
@@ -1638,7 +1641,7 @@ export class RunScene extends Phaser.Scene {
     if (!lostSlots.length) return then();
     lostSlots.forEach((s: any, i: number) => this.time.delayedCall(i * 140, () => {
       Sfx.play('sfx_hit', 0.35);
-      const ic = this.add.image(s.x, s.y, s.ic.texture.key).setScrollFactor(0).setDepth(20000).setDisplaySize(62, 62).setTint(0x777777);
+      const ic = this.add.image(s.x, s.y, s.ic.texture.key).setScrollFactor(0).setDepth(20000).setDisplaySize(76, 76).setTint(0x777777);
       s.ic.setVisible(false); s.n.setText('');
       this.tweens.add({ targets: ic, y: s.y + 260, angle: this.rng.range(-90, 90), alpha: 0, duration: 700, ease: 'Quad.in', onComplete: () => ic.destroy() });
     }));

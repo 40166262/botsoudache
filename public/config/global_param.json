@@ -41,7 +41,7 @@
  "scroll_carry_max": 1,
  "scroll_channel_sec": 5,
  "boss_allow_scroll": true,
- "boss_enrage1_sec": 90,
+ "boss_enrage1_sec": 75,
  "boss_enrage2_sec": 150,
  "floor_time_sec": 60,
  "tutorial_floor_time_sec": 90,
@@ -188,7 +188,7 @@
  "tutorial_chests": {
   "chest_wood": 3
  },
- "tutorial_monster_atk_mul": 0.5,
+ "tutorial_monster_atk_mul": 0.36,
  "tutorial_split_rate": 0,
  "tutorial_first_chest_rarity": "uncommon",
  "first_chest_near_spawn": [
@@ -196,5 +196,6 @@
   6
  ],
  "mimic_min_floor": 2,
- "chest_hint_radius_cells": 12
+ "chest_hint_radius_cells": 12,
+ "boss_enrage_hp_pct": 0.5
 }
