@@ -1,0 +1,44 @@
+[
+ {
+  "region_id": "garden",
+  "floor": 1,
+  "is_boss": false,
+  "boss_id": "",
+  "time_sec": 60,
+  "wave_group": "wg_garden_1",
+  "chests": {
+   "chest_wood": 3
+  },
+  "emergency_exit_rate": 0,
+  "exp_budget": 42,
+  "terrain": {}
+ },
+ {
+  "region_id": "garden",
+  "floor": 2,
+  "is_boss": false,
+  "boss_id": "",
+  "time_sec": 60,
+  "wave_group": "wg_garden_2",
+  "chests": {
+   "chest_wood": 3,
+   "chest_silver": 0.5,
+   "chest_curse": 0.3
+  },
+  "emergency_exit_rate": 0.5,
+  "exp_budget": 97,
+  "terrain": {}
+ },
+ {
+  "region_id": "garden",
+  "floor": 3,
+  "is_boss": true,
+  "boss_id": "boss_vine_golem",
+  "time_sec": 0,
+  "wave_group": "",
+  "chests": {},
+  "emergency_exit_rate": 0,
+  "exp_budget": 79,
+  "terrain": {}
+ }
+]

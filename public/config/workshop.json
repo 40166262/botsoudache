@@ -1,0 +1,30 @@
+[
+ {
+  "type": "backpack",
+  "step": 1,
+  "gold": 500,
+  "crystal": 2,
+  "require_level": 0
+ },
+ {
+  "type": "backpack",
+  "step": 2,
+  "gold": 1200,
+  "crystal": 4,
+  "require_level": 0
+ },
+ {
+  "type": "backpack",
+  "step": 3,
+  "gold": 2500,
+  "crystal": 8,
+  "require_level": 0
+ },
+ {
+  "type": "safe",
+  "step": 1,
+  "gold": 8000,
+  "crystal": 30,
+  "require_level": 10
+ }
+]

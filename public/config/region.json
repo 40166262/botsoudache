@@ -1,0 +1,20 @@
+[
+ {
+  "id": "garden",
+  "name": "萌芽花园遗迹",
+  "floors": 3,
+  "region_coef": 1.0,
+  "unlock_level": 0,
+  "unlock_boss": "",
+  "room_templates": [
+   "rt_garden_01",
+   "rt_garden_02",
+   "rt_garden_03",
+   "rt_garden_04",
+   "rt_garden_05",
+   "rt_garden_06"
+  ],
+  "bgm": "bgm_garden",
+  "enabled": true
+ }
+]

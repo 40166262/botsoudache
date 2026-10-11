@@ -1,0 +1,209 @@
+[
+ {
+  "key": "hitstop_crit",
+  "type": "hitstop",
+  "duration_ms": 40,
+  "amplitude": 0,
+  "ease": "linear",
+  "priority": 1,
+  "reduce_motion_mul": 0
+ },
+ {
+  "key": "hitstop_elite_kill",
+  "type": "hitstop",
+  "duration_ms": 80,
+  "amplitude": 0,
+  "ease": "linear",
+  "priority": 2,
+  "reduce_motion_mul": 0
+ },
+ {
+  "key": "hitstop_boss_kill",
+  "type": "hitstop",
+  "duration_ms": 250,
+  "amplitude": 0,
+  "ease": "linear",
+  "priority": 3,
+  "reduce_motion_mul": 0
+ },
+ {
+  "key": "hitstop_player_hurt",
+  "type": "hitstop",
+  "duration_ms": 60,
+  "amplitude": 0,
+  "ease": "linear",
+  "priority": 2,
+  "reduce_motion_mul": 0
+ },
+ {
+  "key": "slowmo_boss_kill",
+  "type": "slowmo",
+  "duration_ms": 600,
+  "amplitude": 0.3,
+  "ease": "linear",
+  "priority": 3,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "shake_player_hurt",
+  "type": "shake",
+  "duration_ms": 150,
+  "amplitude": 6,
+  "ease": "linear",
+  "priority": 1,
+  "reduce_motion_mul": 0.3
+ },
+ {
+  "key": "shake_player_hurt_low",
+  "type": "shake",
+  "duration_ms": 200,
+  "amplitude": 10,
+  "ease": "linear",
+  "priority": 2,
+  "reduce_motion_mul": 0.3
+ },
+ {
+  "key": "shake_bomb",
+  "type": "shake",
+  "duration_ms": 250,
+  "amplitude": 12,
+  "ease": "expo_out",
+  "priority": 2,
+  "reduce_motion_mul": 0.3
+ },
+ {
+  "key": "shake_elite_die",
+  "type": "shake",
+  "duration_ms": 120,
+  "amplitude": 5,
+  "ease": "linear",
+  "priority": 1,
+  "reduce_motion_mul": 0.3
+ },
+ {
+  "key": "shake_boss_hit",
+  "type": "shake",
+  "duration_ms": 300,
+  "amplitude": 14,
+  "ease": "expo_out",
+  "priority": 3,
+  "reduce_motion_mul": 0.3
+ },
+ {
+  "key": "shake_boss_die",
+  "type": "shake",
+  "duration_ms": 500,
+  "amplitude": 18,
+  "ease": "expo_out",
+  "priority": 4,
+  "reduce_motion_mul": 0.3
+ },
+ {
+  "key": "shake_rock",
+  "type": "shake",
+  "duration_ms": 100,
+  "amplitude": 4,
+  "ease": "linear",
+  "priority": 0,
+  "reduce_motion_mul": 0.3
+ },
+ {
+  "key": "shake_chest_epic",
+  "type": "shake",
+  "duration_ms": 200,
+  "amplitude": 8,
+  "ease": "expo_out",
+  "priority": 2,
+  "reduce_motion_mul": 0.3
+ },
+ {
+  "key": "flash_monster_hit",
+  "type": "flash",
+  "duration_ms": 60,
+  "amplitude": 1,
+  "ease": "linear",
+  "priority": 1,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "squash_monster_hit",
+  "type": "squash",
+  "duration_ms": 100,
+  "amplitude": 0.15,
+  "ease": "back_out",
+  "priority": 1,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "bounce_exp",
+  "type": "bounce",
+  "duration_ms": 300,
+  "amplitude": 24,
+  "ease": "linear",
+  "priority": 0,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "bounce_treasure",
+  "type": "bounce",
+  "duration_ms": 450,
+  "amplitude": 48,
+  "ease": "linear",
+  "priority": 1,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "magnet_pickup",
+  "type": "magnet",
+  "duration_ms": 400,
+  "amplitude": 30,
+  "ease": "linear",
+  "priority": 0,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "popup_normal",
+  "type": "popup_text",
+  "duration_ms": 600,
+  "amplitude": 40,
+  "ease": "linear",
+  "priority": 0,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "popup_crit",
+  "type": "popup_text",
+  "duration_ms": 800,
+  "amplitude": 60,
+  "ease": "back_out",
+  "priority": 2,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "vibrate_player_hurt",
+  "type": "vibrate",
+  "duration_ms": 30,
+  "amplitude": 0,
+  "ease": "linear",
+  "priority": 1,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "vibrate_boss_die",
+  "type": "vibrate",
+  "duration_ms": 100,
+  "amplitude": 0,
+  "ease": "linear",
+  "priority": 3,
+  "reduce_motion_mul": 1
+ },
+ {
+  "key": "vibrate_extract",
+  "type": "vibrate",
+  "duration_ms": 60,
+  "amplitude": 0,
+  "ease": "linear",
+  "priority": 2,
+  "reduce_motion_mul": 1
+ }
+]

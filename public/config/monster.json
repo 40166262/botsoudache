@@ -1,0 +1,147 @@
+[
+ {
+  "id": "mon_slime",
+  "name": "果冻史莱姆",
+  "hp": 20,
+  "atk": 5,
+  "move_speed": 0.6,
+  "exp": 1,
+  "gold_drop_rate": 0.25,
+  "ai_type": "chase",
+  "ai_params": {
+   "split_rate": 0.2,
+   "split_id": "mon_slime_mini",
+   "split_count": 2
+  },
+  "skins": {
+   "garden": "mon_slime"
+  },
+  "is_elite_allowed": true,
+  "radius": 0.4,
+  "enabled": true
+ },
+ {
+  "id": "mon_slime_mini",
+  "name": "小史莱姆",
+  "hp": 8,
+  "atk": 3,
+  "move_speed": 0.75,
+  "exp": 0,
+  "gold_drop_rate": 0,
+  "ai_type": "chase",
+  "ai_params": {},
+  "skins": {
+   "garden": "mon_slime_mini"
+  },
+  "is_elite_allowed": false,
+  "radius": 0.25,
+  "enabled": true
+ },
+ {
+  "id": "mon_bat",
+  "name": "小蝙蝠",
+  "hp": 12,
+  "atk": 4,
+  "move_speed": 1.4,
+  "exp": 1,
+  "gold_drop_rate": 0.2,
+  "ai_type": "swarm",
+  "ai_params": {
+   "group": [
+    5,
+    8
+   ],
+   "wave_amp": 1.2,
+   "wave_freq": 3
+  },
+  "skins": {
+   "garden": "mon_bat"
+  },
+  "is_elite_allowed": false,
+  "radius": 0.35,
+  "enabled": true
+ },
+ {
+  "id": "mon_archer",
+  "name": "蘑菇射手",
+  "hp": 30,
+  "atk": 6,
+  "move_speed": 0.7,
+  "exp": 1,
+  "gold_drop_rate": 0.3,
+  "ai_type": "ranged",
+  "ai_params": {
+   "keep_dist": 4,
+   "shoot_cd": 2,
+   "bullet_speed": 4
+  },
+  "skins": {
+   "garden": "mon_archer"
+  },
+  "is_elite_allowed": true,
+  "radius": 0.4,
+  "enabled": true
+ },
+ {
+  "id": "mon_golem",
+  "name": "石头小傀儡",
+  "hp": 120,
+  "atk": 12,
+  "move_speed": 0.45,
+  "exp": 1,
+  "gold_drop_rate": 0.5,
+  "ai_type": "charge",
+  "ai_params": {
+   "trigger_dist": 3,
+   "windup": 1,
+   "dash_dist": 4,
+   "dash_speed": 10,
+   "cooldown": 3
+  },
+  "skins": {
+   "garden": "mon_golem"
+  },
+  "is_elite_allowed": true,
+  "radius": 0.55,
+  "enabled": true
+ },
+ {
+  "id": "mon_mimic",
+  "name": "宝箱怪",
+  "hp": 80,
+  "atk": 10,
+  "move_speed": 1.1,
+  "exp": 1,
+  "gold_drop_rate": 1,
+  "ai_type": "mimic",
+  "ai_params": {
+   "drop_rarity": "rare"
+  },
+  "skins": {
+   "garden": "mon_mimic"
+  },
+  "is_elite_allowed": false,
+  "radius": 0.45,
+  "enabled": true
+ },
+ {
+  "id": "mon_thief",
+  "name": "盗宝鼠",
+  "hp": 60,
+  "atk": 0,
+  "move_speed": 1.3,
+  "exp": 1,
+  "gold_drop_rate": 0,
+  "ai_type": "thief",
+  "ai_params": {
+   "escape_sec": 15,
+   "bonus_gold": 50
+  },
+  "skins": {
+   "garden": "mon_thief"
+  },
+  "is_elite_allowed": false,
+  "radius": 0.4,
+  "enabled": true
+ }
+]

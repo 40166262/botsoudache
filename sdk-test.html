@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>遗迹快跑 SDK 真机验证</title>
+<style>
+body{margin:0;font:14px/1.4 -apple-system,sans-serif;background:#1d2230;color:#eee;padding:calc(env(safe-area-inset-top) + 8px) 10px calc(env(safe-area-inset-bottom) + 8px)}
+h1{font-size:17px;margin:4px 0 8px}
+.cfg input{width:100%;box-sizing:border-box;margin:2px 0 6px;padding:6px;border-radius:6px;border:0;font-size:13px}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{padding:12px 6px;font-size:14px;border:0;border-radius:8px;background:#3d7bfd;color:#fff}
+#log{margin-top:10px;background:#0e1118;padding:8px;border-radius:8px;font:12px/1.45 monospace;white-space:pre-wrap;word-break:break-all;min-height:200px}
+.ok{color:#6f6}.bad{color:#f77}
+</style></head>
+<body>
+<h1>遗迹快跑 · TapTap H5 SDK 真机验证</h1>
+<div class="cfg">
+  激励视频广告位 ID<input id="rv" placeholder="后台创建的激励视频 adUnitId">
+  插屏广告位 ID<input id="it" placeholder="后台创建的插屏 adUnitId">
+  分享模板 ID<input id="tpl" placeholder="后台配置的分享 templateId">
+  排行榜 ID<input id="lb" placeholder="后台创建的 leaderboardId">
+</div>
+<div class="btns" id="btns"></div>
+<div id="log"></div>
+<script type="module" src="/src/sdktest/main.ts"></script>
+</body></html>

@@ -1,0 +1,47 @@
+[
+ {
+  "id": "tr_copper_bell",
+  "name": "生锈的小铜铃",
+  "rarity": "common",
+  "base_value": 8,
+  "region": "garden",
+  "set_id": "set_garden",
+  "icon": "icon_tr_copper_bell"
+ },
+ {
+  "id": "tr_snail_whistle",
+  "name": "蜗牛壳哨子",
+  "rarity": "common",
+  "base_value": 10,
+  "region": "garden",
+  "set_id": "",
+  "icon": "icon_tr_snail_whistle"
+ },
+ {
+  "id": "tr_dew_bottle",
+  "name": "露珠玻璃瓶",
+  "rarity": "uncommon",
+  "base_value": 25,
+  "region": "garden",
+  "set_id": "set_garden",
+  "icon": "icon_tr_dew_bottle"
+ },
+ {
+  "id": "tr_vine_crown",
+  "name": "古藤王冠",
+  "rarity": "rare",
+  "base_value": 90,
+  "region": "garden",
+  "set_id": "set_garden",
+  "icon": "icon_tr_vine_crown"
+ },
+ {
+  "id": "tr_fairy_harp",
+  "name": "精灵的竖琴",
+  "rarity": "epic",
+  "base_value": 300,
+  "region": "garden",
+  "set_id": "",
+  "icon": "icon_tr_fairy_harp"
+ }
+]
