@@ -30,6 +30,7 @@ const MON_COLOR: Record<string, number> = { mon_slime: 0x7ee36b, mon_slime_mini:
 export class RunScene extends Phaser.Scene {
   constructor() { super('Run'); }
   // 基础
+  stoneGrid: Uint8Array | null = null; gridW = 0; gridH = 0; stoneLayer: Phaser.Tilemaps.TilemapLayer | null = null; roomPlazas: { ox: number; oy: number; x0: number; y0: number; sz: number; cx: number; cy: number }[] = [];
   rng!: Rng; juice!: Juice; floor = 1; isBoss = false; regionCoef = 1; mapW = 0; mapH = 0;
   W = 750; H = 1334; topH = 0; barTop = 0; sa = { top: 0, bottom: 0 };
   tutorial = false; lockTipT = 0;
@@ -125,38 +126,91 @@ export class RunScene extends Phaser.Scene {
     const R = 18 * CELL;
     if (this.isBoss) { this.mapW = 16 * CELL; this.mapH = 34 * CELL; } else { this.mapW = 3 * R; this.mapH = 3 * R; }
     this.cameras.main.setBackgroundColor('#3d5a2a');
-    this.add.tileSprite(0, 0, this.mapW, this.mapH, 'tile_garden_grass').setOrigin(0).setDepth(-1000);
-    // 石板路：贯穿房间中心
-    const road = (x: number, y: number, w: number, h: number) => this.add.tileSprite(x, y, w, h, 'tile_garden_stone').setOrigin(0).setDepth(-999).setTileScale(0.5);
-    if (!this.isBoss) {
-      for (let i = 0; i < 3; i++) { road(0, i * R + R / 2 - CELL, this.mapW, CELL * 2); road(i * R + R / 2 - CELL, 0, CELL * 2, this.mapH); }
-      // 房间中心广场
-      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (this.rng.chance(0.6)) road(i * R + R / 2 - CELL * 2.5, j * R + R / 2 - CELL * 2.5, CELL * 5, CELL * 5);
-    } else {
-      road(this.mapW / 2 - CELL * 1.5, 0, CELL * 3, this.mapH);
-      road(CELL * 2, CELL * 2, this.mapW - CELL * 4, CELL * 20);
-    }
-    // 边界：石柱围墙
-    const edge = this.add.graphics().setDepth(-998); edge.lineStyle(26, 0x2b1d14, 0.55); edge.strokeRect(0, 0, this.mapW, this.mapH);
-    for (let x = 0; x <= this.mapW; x += CELL * 3) { this.prop('prop_bush_flower', x, -10, false, 0.9); this.prop('prop_bush_flower', x, this.mapH + 40, false, 0.9); }
-    for (let y = CELL * 2; y <= this.mapH; y += CELL * 3) { this.prop('prop_bush_flower', -10, y, false, 0.9); this.prop('prop_bush_flower', this.mapW + 10, y, false, 0.9); }
+    this.add.tileSprite(0, 0, this.mapW, this.mapH, 'tile_garden_grass').setOrigin(0).setDepth(-1000).setTileScale(1);
+    // 石砖：64px 瓦片铺成 tilemap（只渲染镜头内的格子，比遮罩省）
+    const cw = Math.ceil(this.mapW / CELL), chh = Math.ceil(this.mapH / CELL);
+    this.stoneGrid = new Uint8Array(cw * chh); this.gridW = cw; this.gridH = chh;
+    const tm = this.make.tilemap({ tileWidth: CELL, tileHeight: CELL, width: cw, height: chh });
+    const ts = tm.addTilesetImage('stone', 'tile_garden_stone_64', CELL, CELL, 0, 0, 0)!;
+    this.stoneLayer = tm.createBlankLayer('stone', ts, 0, 0)!.setDepth(-999);
+    const stone = (x0: number, y0: number, w: number, h: number, round = false) => {
+      for (let x = x0; x < x0 + w; x++) for (let y = y0; y < y0 + h; y++) {
+        if (round && (x === x0 || x === x0 + w - 1) && (y === y0 || y === y0 + h - 1)) continue; // 圆角：去掉 4 个角
+        if (x < 0 || y < 0 || x >= cw || y >= chh) continue;
+        this.stoneGrid![y * cw + x] = 1; this.stoneLayer!.putTileAt(0, x, y);
+      }
+    };
+    // 边界：外圈一排树（不挡路，只做画框）
+    const edge = this.add.graphics().setDepth(-998); edge.lineStyle(26, 0x2b4a1e, 0.5); edge.strokeRect(0, 0, this.mapW, this.mapH);
+    for (let x = -CELL; x <= this.mapW + CELL; x += CELL * 2.2) { this.deco('deco_garden_tree', x + this.rng.range(-20, 20), -CELL * 0.2, true); this.deco('deco_garden_tree', x + this.rng.range(-20, 20), this.mapH + CELL * 2.2, true); }
+    for (let y = CELL * 1.8; y <= this.mapH + CELL; y += CELL * 2.2) { this.deco('deco_garden_tree', -CELL * 0.6, y, true); this.deco('deco_garden_tree', this.mapW + CELL * 0.6, y); }
 
-    if (this.isBoss) return this.buildBossMap();
-    // 每个房间：障碍、装饰、陶罐
-    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
-      const ox = i * R, oy = j * R;
-      const n = this.rng.int(4, 7);
-      for (let k = 0; k < n; k++) {
-        const x = ox + this.rng.range(2, 16) * CELL, y = oy + this.rng.range(2, 16) * CELL;
-        if (Math.abs(x - (ox + R / 2)) < CELL * 2.5 || Math.abs(y - (oy + R / 2)) < CELL * 2.5) continue; // 不堵路
-        const kind = this.rng.pick(['prop_pillar', 'prop_rock', 'prop_statue', 'prop_rock', 'prop_bush_flower', 'prop_bush_flower']);
-        this.prop(kind, x, y, kind !== 'prop_bush_flower');
+    if (this.isBoss) { stone(Math.floor(cw / 2) - 1, 0, 3, chh); stone(2, 2, cw - 4, 20, true); return this.buildBossMap(); }
+
+    // ===== 房间（3×3，每间 18×18 格），规则见美术《花园房间布景规则_v1》 =====
+    const N = 3, RC = 18;
+    // 房间之间的连路：全连后随机去掉一些，保证每间 ≥2 条且整体连通
+    const links: [number, number, number, number][] = [];
+    for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) { if (i < N - 1) links.push([i, j, i + 1, j]); if (j < N - 1) links.push([i, j, i, j + 1]); }
+    const deg = (i: number, j: number, L: typeof links) => L.filter((l) => (l[0] === i && l[1] === j) || (l[2] === i && l[3] === j)).length;
+    const connected = (L: typeof links) => { const seen = new Set(['0,0']); const q = [[0, 0]]; while (q.length) { const [i, j] = q.pop()!; for (const l of L) { let o: number[] | null = null; if (l[0] === i && l[1] === j) o = [l[2], l[3]]; else if (l[2] === i && l[3] === j) o = [l[0], l[1]]; if (o && !seen.has(o.join(','))) { seen.add(o.join(',')); q.push(o); } } } return seen.size === N * N; };
+    let L = [...links];
+    for (const l of Phaser.Utils.Array.Shuffle([...links])) { if (!this.rng.chance(0.3)) continue; const t = L.filter((x) => x !== l); if (deg(l[0], l[1], t) >= 2 && deg(l[2], l[3], t) >= 2 && connected(t)) L = t; }
+    this.roomPlazas = [];
+    for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+      const ox = i * RC, oy = j * RC, cx = ox + 9, cy = oy + 9;
+      const sz = this.rng.int(6, 8), x0 = cx - Math.floor(sz / 2), y0 = cy - Math.floor(sz / 2);
+      stone(x0, y0, sz, sz, true);
+      this.roomPlazas.push({ ox, oy, x0, y0, sz, cx, cy });
+      const has = (di: number, dj: number) => L.some((l) => (l[0] === i && l[1] === j && l[2] === i + di && l[3] === j + dj) || (l[2] === i && l[3] === j && l[0] === i + di && l[1] === j + dj));
+      if (has(1, 0)) stone(x0 + sz, cy - 1, ox + RC - (x0 + sz), 2);
+      if (has(-1, 0)) stone(ox, cy - 1, x0 - ox, 2);
+      if (has(0, 1)) stone(cx - 1, y0 + sz, 2, oy + RC - (y0 + sz));
+      if (has(0, -1)) stone(cx - 1, oy, 2, y0 - oy);
+    }
+    for (let r = 0; r < this.roomPlazas.length; r++) {
+      const P = this.roomPlazas[r]; const { ox, oy, x0, y0, sz, cx, cy } = P; let solids = 0;
+      const C = (gx: number) => gx * CELL;
+      // 广场四角柱子，随机缺 0~2 根
+      const corners = Phaser.Utils.Array.Shuffle([[x0, y0], [x0 + sz - 1, y0], [x0, y0 + sz - 1], [x0 + sz - 1, y0 + sz - 1]]);
+      const miss = this.rng.int(0, 2);
+      corners.slice(miss).forEach(([gx, gy]) => { this.prop('prop_pillar', C(gx + 0.5), C(gy + 0.9), true); solids++; });
+      // 广场上沿中间的雕像（上方没有小路时才放，小路上不放碰撞物）
+      if (this.rng.chance(0.6) && !this.isStone(cx, y0 - 1)) { this.prop('prop_statue', C(cx), C(y0 + 0.8), true); solids++; }
+      // 房间四角的自然物件组
+      for (const [sx, sy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) {
+        const bx = sx ? ox + RC - this.rng.range(1.5, 3) : ox + this.rng.range(1.5, 3), by = sy ? oy + RC - this.rng.range(1, 2.5) : oy + this.rng.range(2, 3);
+        if (this.place('deco_garden_tree', C(bx), C(by), 0.6)) solids++;
+        if (this.rng.chance(0.5) && this.place('deco_garden_tree', C(bx + (sx ? -2.2 : 2.2)), C(by + this.rng.range(-0.5, 0.8)), 0.6)) solids++;
+        if (this.rng.chance(0.7)) this.place('prop_bush_flower', C(bx + (sx ? -1 : 1) * this.rng.range(0.8, 1.4)), C(by + 1.1), 0);
+        if (this.rng.chance(0.6)) this.place('deco_garden_mushroom', C(bx + (sx ? 1 : -1) * 0.9), C(by + 0.6), 0);
+      }
+      // 草地上的断墙 2~3 段（离房间边 2~4 格）
+      for (let k = 0, n = this.rng.int(2, 3), tries = 0; k < n && tries < 30; tries++) {
+        const side = this.rng.int(0, 3); const d = this.rng.range(2, 4), t = this.rng.range(3, 15);
+        const gx = side === 0 ? ox + t : side === 1 ? ox + RC - d : side === 2 ? ox + t : ox + d;
+        const gy = side === 0 ? oy + d + 0.5 : side === 1 ? oy + t : side === 2 ? oy + RC - d : oy + t;
+        if (this.place('obs_garden_wall', C(gx), C(gy), 1.0, true)) { k++; solids++; }
+      }
+      // 点缀：石头 1~2、水洼 0~1、篱笆 0~1
+      for (let k = 0, n = this.rng.int(1, 2), tries = 0; k < n && tries < 30; tries++) if (this.place('prop_rock', C(ox + this.rng.range(2, 16)), C(oy + this.rng.range(2, 16)), 0.7)) { k++; solids++; }
+      if (this.rng.chance(0.6)) for (let tries = 0; tries < 20; tries++) if (this.place('deco_garden_puddle', C(ox + this.rng.range(2, 16)), C(oy + this.rng.range(2, 16)), 0, false, true)) break;
+      if (this.rng.chance(0.5)) for (let tries = 0; tries < 20; tries++) if (this.place('obs_garden_fence', C(ox + this.rng.range(2, 16)), C(oy + this.rng.range(2, 16)), 0.9, true)) { solids++; break; }
+      if (this.rng.chance(0.4)) for (let tries = 0; tries < 20; tries++) if (this.place('deco_garden_slab', C(ox + this.rng.range(2, 16)), C(oy + this.rng.range(2, 16)), 0, false, true)) break;
+      // 补到至少 8 个碰撞物（石头）
+      for (let tries = 0; solids < 8 && tries < 40; tries++) if (this.place(this.rng.chance(0.5) ? 'prop_rock' : 'prop_bush_flower', C(ox + this.rng.range(2, 16)), C(oy + this.rng.range(2, 16)), 0.6)) solids++;
+      // 草丛 + 小花 20~30 个，只撒在草地上
+      for (let k = 0, n = this.rng.int(20, 30), tries = 0; k < n && tries < 80; tries++) {
+        const gx = ox + this.rng.range(0.5, 17.5), gy = oy + this.rng.range(0.5, 17.5);
+        if (this.isStone(Math.floor(gx), Math.floor(gy))) continue;
+        const img = this.add.image(C(gx), C(gy), this.rng.chance(0.55) ? 'deco_garden_grass' : 'deco_garden_flower').setOrigin(0.5, 1).setDepth(-600 + gy * 0.01);
+        if (this.rng.chance(0.5)) img.setFlipX(true); k++;
       }
     }
-    // 出生点：中央房间
+    // 出生点：中央房间广场中心
     this.px = R * 1.5; this.py = R * 1.5;
-    // 陶罐
-    for (let k = 0; k < Cfg.gp._pot_count; k++) { const p = this.freeSpot(3); this.pots.push({ x: p.x, y: p.y, spr: this.add.image(p.x, p.y, 'prop_pot').setOrigin(0.5, 0.9).setDepth(p.y), broken: false }); }
+    // 陶罐：广场边缘或小路旁 1 格内
+    for (let k = 0; k < Cfg.gp._pot_count; k++) { const p = this.edgeSpot(3); this.pots.push({ x: p.x, y: p.y, spr: this.add.image(p.x, p.y, 'prop_pot').setOrigin(0.5, 0.97).setDepth(p.y), broken: false }); this.shadowAt(p.x, p.y, 71); }
     // 宝箱（寻宝直觉加成数量）
     const fr = Cfg.floorRow('garden', this.floor);
     const chestTable: Record<string, number> = this.tutorial && this.floor === 1 && Cfg.gp.tutorial_chests ? Cfg.gp.tutorial_chests : fr.chests;
@@ -167,13 +221,49 @@ export class RunScene extends Phaser.Scene {
       for (let k = 0; k < n; k++) {
         // 第一个宝箱刷在出生点 4~6 格内（教开箱）
         const near = Cfg.gp.first_chest_near_spawn as number[] | undefined;
-        const p = firstChest && near ? this.ringSpot(near[0], near[1]) : this.freeSpot(5);
+        const p = firstChest && near ? this.ringSpot(near[0], near[1]) : this.edgeSpot(5);
         const mimic = !firstChest && id === 'chest_wood' && this.floor >= (Cfg.gp.mimic_min_floor ?? 1) && this.rng.chance(Cfg.gp._mimic_rate);
         const c = this.addChest(id, p.x, p.y, mimic);
         if (firstChest && this.tutorial) (c as any).minRarity = Cfg.gp.tutorial_first_chest_rarity ?? null;
         firstChest = false;
       }
     }
+  }
+  isStone(gx: number, gy: number) { return gx >= 0 && gy >= 0 && gx < this.gridW && gy < this.gridH && this.stoneGrid![gy * this.gridW + gx] === 1; }
+  /** 椭圆影子：宽 = 图宽 70%，高 16px，#1E3C1E 透明度 0.27（布景规则 §图层 5） */
+  shadowAt(x: number, y: number, w: number) { this.add.image(x, y - 2, 'shadow_e').setDisplaySize(w * 0.7, 16).setTint(0x1e3c1e).setAlpha(0.27).setDepth(y - 1); }
+  /** 立体装饰（可选碰撞，不做规则检查） */
+  deco(key: string, x: number, y: number, flip = false) { const img = this.add.image(x, y, key).setOrigin(0.5, 0.97).setDepth(y); if (flip || this.rng.chance(0.5)) img.setFlipX(true); this.shadowAt(x, y, img.width); return img; }
+  /** 按布景规则放物件：碰撞物之间 ≥2 格、不压小路、不进广场中心 4×4；flat=平铺装饰 */
+  place(key: string, x: number, y: number, rCells: number, wide = false, flat = false): boolean {
+    const gx = Math.floor(x / CELL), gy = Math.floor(y / CELL);
+    if (x < CELL || y < CELL * 1.5 || x > this.mapW - CELL || y > this.mapH - CELL * 0.5) return false;
+    const span = wide ? 2 : 1;
+    for (let dx = -span; dx <= span; dx++) for (let dy = -1; dy <= 0; dy++) if (this.isStone(gx + dx, gy + dy)) return false;
+    for (const P of this.roomPlazas) if (Math.abs(x / CELL - P.cx) < 2.5 && Math.abs(y / CELL - P.cy) < 2.5) return false;
+    if (rCells > 0 && this.obst.some((o) => dist2(x, y, o.x, o.y) < (2 * CELL) ** 2)) return false;
+    if (dist2(x, y, this.mapW / 2, this.mapH / 2) < (3 * CELL) ** 2) return false; // 出生点周围留空
+    if (flat) { const img = this.add.image(x, y, key).setOrigin(0.5, 1).setDepth(-700); if (this.rng.chance(0.5)) img.setFlipX(true); return true; }
+    const img = this.add.image(x, y, key).setOrigin(0.5, 0.97).setDepth(y);
+    if (this.rng.chance(0.5) && key !== 'prop_statue') img.setFlipX(true);
+    this.shadowAt(x, y, img.width);
+    if (rCells > 0) { if (wide) { this.obst.push({ x: x - CELL * 0.5, y: y - 14, r: CELL * 0.55 }); this.obst.push({ x: x + CELL * 0.5, y: y - 14, r: CELL * 0.55 }); } else this.obst.push({ x, y: y - 12, r: rCells * CELL * 0.6 }); }
+    return true;
+  }
+  /** 广场边缘或小路旁 1 格内的草地格（宝箱/陶罐要一眼能看到） */
+  edgeSpot(minDist: number) {
+    for (let k = 0; k < 200; k++) {
+      const gx = this.rng.int(1, this.gridW - 2), gy = this.rng.int(2, this.gridH - 2);
+      if (this.isStone(gx, gy)) continue;
+      if (!(this.isStone(gx + 1, gy) || this.isStone(gx - 1, gy) || this.isStone(gx, gy + 1) || this.isStone(gx, gy - 1))) continue;
+      const x = (gx + 0.5) * CELL, y = (gy + 0.8) * CELL;
+      if (dist2(x, y, this.px, this.py) < (minDist * CELL) ** 2) continue;
+      if (this.obst.some((o) => dist2(x, y, o.x, o.y) < (o.r + CELL * 0.8) ** 2)) continue;
+      if (this.chests.some((c) => dist2(x, y, c.x, c.y) < (CELL * 4) ** 2)) continue;
+      if (this.pots.some((c) => dist2(x, y, c.x, c.y) < (CELL * 2) ** 2)) continue;
+      return { x, y };
+    }
+    return this.freeSpot(minDist);
   }
   buildBossMap() {
     // 前厅（下方 10 格）+ Boss 房（上方 24 格）
@@ -189,7 +279,7 @@ export class RunScene extends Phaser.Scene {
   }
   txtWorld(x: number, y: number, s: string, size: number, color: string) { return txt(this, x, y, s, size, color, '#2b1d14', 6).setDepth(-900); }
   prop(key: string, x: number, y: number, solid: boolean, sc = 1) {
-    const img = this.add.image(x, y, key).setOrigin(0.5, 0.92).setDepth(y).setScale(sc);
+    const img = this.add.image(x, y, key).setOrigin(0.5, 0.97).setDepth(y).setScale(sc); this.shadowAt(x, y, img.width * sc);
     if (this.rng.chance(0.5) && key !== 'prop_statue') img.setFlipX(true);
     if (solid) this.obst.push({ x, y: y - 10, r: (key === 'prop_rock' ? 0.75 : 0.6) * CELL * sc });
     return img;
@@ -216,8 +306,8 @@ export class RunScene extends Phaser.Scene {
   }
   addChest(id: string, x: number, y: number, mimic = false) {
     const row = Cfg.chestRow(id);
-    const spr = this.add.image(x, y, row.sprite + '_closed').setOrigin(0.5, 0.92).setDepth(y);
-    this.add.image(x, y + 4, 'shadow').setDepth(y - 1).setScale(1.3, 1.2);
+    const spr = this.add.image(x, y, row.sprite + '_closed').setOrigin(0.5, 0.97).setDepth(y);
+    this.shadowAt(x, y, spr.width);
     if (id === 'chest_curse') this.tweens.add({ targets: spr, alpha: 0.82, yoyo: true, repeat: -1, duration: 700 });
     if (id !== 'chest_wood') this.tweens.add({ targets: spr, scaleY: 1.05, yoyo: true, repeat: -1, duration: 900, ease: 'Sine.inOut' });
     const c: Chest = { id, x, y, spr, opened: false, prog: 0, mimic };
@@ -927,7 +1017,7 @@ export class RunScene extends Phaser.Scene {
     this.drops.push(d); return d;
   }
   spawnItem(item: BagItem, x: number, y: number, delay = 0) {
-    const spr = this.add.image(x, y, this.itemIcon(item)).setScale(item.kind === 'treasure' ? 0.55 : 0.4).setDepth(y);
+    const spr = this.add.image(x, y, this.itemIcon(item)).setScale(item.kind === 'treasure' ? 0.7 : 0.55).setDepth(y);
     const a = -Math.PI / 2 + this.rng.range(-1.2, 1.2), dd = this.rng.range(0.8, 1.4) * CELL;
     const j = Cfg.juice.bounce_treasure;
     const d: Drop = { kind: 'item', spr, x, y, z: 0, value: item.value ?? 0, item, st: 'bounce', t: -delay, dur: (j?.duration_ms ?? 450) / 1000, h: j?.amplitude ?? 48, sx: x, sy: y, tx: clamp(x + Math.cos(a) * dd, 30, this.mapW - 30), ty: clamp(y + Math.sin(a) * dd * 0.6 + 30, 30, this.mapH - 30), vx: 0, vy: 0, mt: 0, fx: [] };

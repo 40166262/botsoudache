@@ -10,7 +10,8 @@ const IMGS = ['boss_vine_golem_attack', 'boss_vine_golem_dead', 'boss_vine_golem
   'chest_boss_closed', 'chest_boss_open', 'chest_cursed_closed', 'chest_cursed_open', 'chest_silver_closed', 'chest_silver_open', 'chest_wood_closed', 'chest_wood_open',
   'icon_blueprint', 'icon_bomb', 'icon_coin', 'icon_exp_star', 'icon_iron', 'icon_mana_crystal', 'icon_potion', 'icon_relic_shard', 'icon_scroll_evac', 'icon_shield',
   'mon_bat', 'mon_golem', 'mon_mimic', 'mon_archer', 'mon_slime', 'mon_slime_elite', 'mon_slime_mini', 'mon_thief',
-  'prop_bush_flower', 'prop_pillar', 'prop_portal_evac', 'prop_pot', 'prop_pot_broken', 'prop_rock', 'prop_stairs_down', 'prop_statue', 'tile_garden_grass', 'tile_garden_stone'];
+  'prop_bush_flower', 'prop_pillar', 'prop_portal_evac', 'prop_pot', 'prop_pot_broken', 'prop_rock', 'prop_stairs_down', 'prop_statue', 'tile_garden_grass', 'tile_garden_stone', 'tile_garden_stone_64', 'tile_garden_grass_64',
+  'deco_garden_flower', 'deco_garden_grass', 'deco_garden_mushroom', 'deco_garden_puddle', 'deco_garden_slab', 'deco_garden_tree', 'obs_garden_fence', 'obs_garden_wall'];
 
 export class BootScene extends Phaser.Scene {
   constructor() { super('Boot'); }
