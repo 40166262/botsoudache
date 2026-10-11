@@ -69,5 +69,98 @@
    46,
    54
   ]
+ },
+ {
+  "wave_group": "wg_shrine_1",
+  "t_start": 0,
+  "t_end": 20,
+  "spawn_per_10s": 8,
+  "monster_weights": {
+   "mon_slime": 60,
+   "mon_bat": 40
+  },
+  "elite_at": []
+ },
+ {
+  "wave_group": "wg_shrine_1",
+  "t_start": 20,
+  "t_end": 999,
+  "spawn_per_10s": 12,
+  "monster_weights": {
+   "mon_slime": 50,
+   "mon_bat": 30,
+   "mon_golem": 20
+  },
+  "elite_at": []
+ },
+ {
+  "wave_group": "wg_shrine_2",
+  "t_start": 0,
+  "t_end": 30,
+  "spawn_per_10s": 14,
+  "monster_weights": {
+   "mon_slime": 60,
+   "mon_bat": 30,
+   "mon_golem": 10
+  },
+  "elite_at": [
+   25
+  ]
+ },
+ {
+  "wave_group": "wg_shrine_2",
+  "t_start": 30,
+  "t_end": 999,
+  "spawn_per_10s": 17,
+  "monster_weights": {
+   "mon_slime": 60,
+   "mon_bat": 30,
+   "mon_golem": 10
+  },
+  "elite_at": [
+   45
+  ]
+ },
+ {
+  "wave_group": "wg_shrine_3",
+  "t_start": 0,
+  "t_end": 20,
+  "spawn_per_10s": 18,
+  "monster_weights": {
+   "mon_slime": 55,
+   "mon_bat": 25,
+   "mon_golem": 20
+  },
+  "elite_at": [
+   15
+  ]
+ },
+ {
+  "wave_group": "wg_shrine_3",
+  "t_start": 20,
+  "t_end": 40,
+  "spawn_per_10s": 21,
+  "monster_weights": {
+   "mon_slime": 55,
+   "mon_bat": 25,
+   "mon_golem": 20
+  },
+  "elite_at": [
+   35
+  ]
+ },
+ {
+  "wave_group": "wg_shrine_3",
+  "t_start": 40,
+  "t_end": 999,
+  "spawn_per_10s": 24,
+  "monster_weights": {
+   "mon_slime": 55,
+   "mon_bat": 25,
+   "mon_golem": 20
+  },
+  "elite_at": [
+   50
+  ]
  }
 ]

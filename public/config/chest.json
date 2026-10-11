@@ -85,5 +85,31 @@
   "open_time": 1,
   "on_open": {},
   "sprite": "chest_boss"
+ },
+ {
+  "id": "chest_curse_shrine",
+  "rarity_weights": {
+   "rare": 84,
+   "epic": 15,
+   "legend": 1
+  },
+  "item_count": 1,
+  "apply_depth_coef": true,
+  "gold": [
+   0,
+   0
+  ],
+  "materials": {
+   "crystal": [
+    1,
+    2
+   ]
+  },
+  "open_time": 1,
+  "on_open": {
+   "spawn_elite": 1,
+   "haste_sec": 3
+  },
+  "sprite": "chest_cursed"
  }
 ]

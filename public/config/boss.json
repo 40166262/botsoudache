@@ -14,5 +14,21 @@
    "crystal": 2
   },
   "radius": 1.3
+ },
+ {
+  "id": "boss_pharaoh_cat",
+  "name": "沙之法老猫·喵老大",
+  "hp": 6000,
+  "atk": 30,
+  "move_speed": 0.6,
+  "drop_chest": "chest_boss",
+  "first_clear_reward": {
+   "blueprint_rarity": "epic"
+  },
+  "drops": {
+   "shard": 10,
+   "crystal": 4
+  },
+  "radius": 1.2
  }
 ]

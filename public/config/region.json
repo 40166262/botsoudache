@@ -16,5 +16,23 @@
   ],
   "bgm": "bgm_garden",
   "enabled": true
+ },
+ {
+  "id": "shrine",
+  "name": "沉沙神殿",
+  "floors": 4,
+  "region_coef": 2.5,
+  "unlock_level": 5,
+  "unlock_boss": "boss_vine_golem",
+  "room_templates": [
+   "rt_shrine_01",
+   "rt_shrine_02",
+   "rt_shrine_03",
+   "rt_shrine_04",
+   "rt_shrine_05",
+   "rt_shrine_06"
+  ],
+  "bgm": "bgm_shrine",
+  "enabled": true
  }
 ]

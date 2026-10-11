@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { hasImg } from '../Atlas';
 import { BossRow, BossSkillRow, Cfg, MonsterRow, Rarity, RARITY_COLOR, RARITY_NAME, RARITY_ORDER, SkillRow } from '../../config/Config';
 import { getPlatform } from '../../platform';
 import { BagItem, Save } from '../../save/SaveManager';
@@ -345,7 +346,8 @@ export class RunScene extends Phaser.Scene {
     if (vg) { const ctx = vg.getContext(); const gr = ctx.createRadialGradient(187, 333, 120, 187, 333, 420); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(25,12,0,0.55)'); ctx.fillStyle = gr; ctx.fillRect(0, 0, 375, 667); vg.refresh(); }
     const rv = this.textures.exists('vignette_red') ? null : this.textures.createCanvas('vignette_red', 375, 667);
     if (rv) { const ctx = rv.getContext(); const gr = ctx.createRadialGradient(187, 333, 160, 187, 333, 420); gr.addColorStop(0, 'rgba(255,0,0,0)'); gr.addColorStop(1, 'rgba(220,0,0,0.75)'); ctx.fillStyle = gr; ctx.fillRect(0, 0, 375, 667); rv.refresh(); }
-    this.add.image(0, 0, 'vignette').setOrigin(0).setScrollFactor(0).setDisplaySize(this.W, this.H).setDepth(15000);
+    this.vignette = this.add.image(0, 0, 'vignette').setOrigin(0).setScrollFactor(0).setDisplaySize(this.W, this.H).setDepth(15000);
+    if (this.lowQ()) this.vignette.setVisible(false);
     this.hud.red = this.add.image(0, 0, 'vignette_red').setOrigin(0).setScrollFactor(0).setDisplaySize(this.W, this.H).setDepth(15001).setAlpha(0);
   }
 
@@ -430,6 +432,14 @@ export class RunScene extends Phaser.Scene {
   }
   treasureRarity(id: string): Rarity { return Cfg.treasure.find((t) => t.id === id)?.rarity ?? 'common'; }
   // ======== 小地图（右上角圆形，以主角为中心，1 格 = 4px） ========
+  vignette: Img | null = null; fpsAcc = 0; fpsN = 0;
+  lowQ() { const q = Save.data.settings.quality; return q === 'low' || (q === 'auto' && (Save.data.settings as any).auto_low === true); }
+  /** 自动画质：开局前 4 秒平均帧率低于 40，就关掉全屏暗角、少刷几只怪（只在 auto 档生效，记住结果） */
+  autoQuality(dt: number) {
+    const st: any = Save.data.settings; if (st.quality !== 'auto' || st.auto_low !== undefined || this.floorT < 1) return;
+    this.fpsAcc += dt; this.fpsN++;
+    if (this.fpsAcc >= 4) { const fps = this.fpsN / this.fpsAcc; st.auto_low = fps < 40; Save.write(false); if (st.auto_low) { this.vignette?.setVisible(false); this.toast('已自动切换到流畅画质'); } console.log('[perf] auto quality', fps.toFixed(1), st.auto_low ? 'low' : 'high'); }
+  }
   mm: any = null; statics: Img[] = []; cullT = 0;
   buildMinimap() {
     const S = 4 / CELL; const top = this.topH + 8; const cx = this.W - 98, cy = top + 88, R = 72;
@@ -470,9 +480,9 @@ export class RunScene extends Phaser.Scene {
     }
     for (const [o, img] of m.marks) if (!seen.has(o)) { img.destroy(); m.marks.delete(o); }
   }
-  skillIcon(id: string) { const k = 'icon_' + id; return this.textures.exists(k) ? k : 'ic_' + id; }
+  skillIcon(id: string) { const k = 'icon_' + id; return hasImg(this, k) ? k : 'ic_' + id; }
   itemIcon(it: BagItem) {
-    if (it.kind === 'treasure') { const k = 'icon_' + it.id; return this.textures.exists(k) ? k : 'gem_' + this.treasureRarity(it.id); }
+    if (it.kind === 'treasure') { const k = 'icon_' + it.id; return hasImg(this, k) ? k : 'gem_' + this.treasureRarity(it.id); }
     if (it.kind === 'blueprint') return 'icon_blueprint';
     return Cfg.material.find((m) => m.id === it.id)?.icon ?? 'icon_relic_shard';
   }
@@ -555,6 +565,7 @@ export class RunScene extends Phaser.Scene {
     if (!frozen) this.updatePlayer(dt);
     this.updateCamera();
     this.updateMinimap();
+    this.autoQuality(realDt);
     if ((this.cullT = (this.cullT ?? 0) + 1) % 6 === 0) { const v = this.cameras.main.worldView; const m = 260; for (const o of this.statics) { if (!o.active) continue; o.setVisible(o.x > v.x - m && o.x < v.right + m && o.y > v.y - m && o.y < v.bottom + m * 1.6); } }
     this.updateTimer(dt);
     this.updateSpawns(dt);
@@ -698,7 +709,7 @@ export class RunScene extends Phaser.Scene {
   updateSpawns(dt: number) {
     if (this.isBoss) return;
     const t = this.floorT; const row = this.waveRows.find((w) => t >= w.t_start && t < w.t_end); if (!row) return;
-    const cap = Save.data.settings.quality === 'low' ? Cfg.gp.max_enemies_low : Cfg.gp.max_enemies;
+    const cap = this.lowQ() ? Cfg.gp.max_enemies_low : Cfg.gp.max_enemies;
     this.spawnAcc += (row.spawn_per_10s / 10) * dt;
     while (this.spawnAcc >= 1) {
       this.spawnAcc -= 1;
@@ -1160,7 +1171,7 @@ export class RunScene extends Phaser.Scene {
   startMagnet(d: Drop) { d.st = 'mag'; d.mt = 0; }
   collect(d: Drop) {
     // 拾取：图标在主角头顶放大弹一下再消失
-    const pop = this.add.image(this.px, this.py - 70, d.spr.texture.key).setScale(d.spr.scaleX).setDepth(this.py + 5);
+    const pop = this.add.image(this.px, this.py - 70, d.spr.texture.key, d.spr.frame.name).setScale(d.spr.scaleX).setDepth(this.py + 5);
     this.tweens.add({ targets: pop, scale: d.spr.scaleX * 1.6, y: pop.y - 26, duration: 110, ease: 'Back.out', yoyo: true, hold: 30, onComplete: () => pop.destroy() });
     d.st = 'dead'; d.spr.destroy(); d.fx?.forEach((f: any) => f.destroy());
     this.sparkP.emitParticleAt(this.px, this.py - 50, 1);
@@ -1704,7 +1715,7 @@ export class RunScene extends Phaser.Scene {
     if (!lostSlots.length) return then();
     lostSlots.forEach((s: any, i: number) => this.time.delayedCall(i * 140, () => {
       Sfx.play('sfx_hit', 0.35);
-      const ic = this.add.image(s.x, s.y, s.ic.texture.key).setScrollFactor(0).setDepth(20000).setDisplaySize(76, 76).setTint(0x777777);
+      const ic = this.add.image(s.x, s.y, s.ic.texture.key, s.ic.frame.name).setScrollFactor(0).setDepth(20000).setDisplaySize(76, 76).setTint(0x777777);
       s.ic.setVisible(false); s.n.setText('');
       this.tweens.add({ targets: ic, y: s.y + 260, angle: this.rng.range(-90, 90), alpha: 0, duration: 700, ease: 'Quad.in', onComplete: () => ic.destroy() });
     }));

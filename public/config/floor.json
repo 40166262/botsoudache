@@ -40,5 +40,72 @@
   "emergency_exit_rate": 0,
   "exp_budget": 79,
   "terrain": {}
+ },
+ {
+  "region_id": "shrine",
+  "floor": 1,
+  "is_boss": false,
+  "boss_id": "",
+  "time_sec": 60,
+  "wave_group": "wg_shrine_1",
+  "chests": {
+   "chest_wood": 3
+  },
+  "emergency_exit_rate": 0,
+  "exp_budget": 50,
+  "terrain": {
+   "quicksand_rate": 0.1,
+   "quicksand_slow": 0.4
+  }
+ },
+ {
+  "region_id": "shrine",
+  "floor": 2,
+  "is_boss": false,
+  "boss_id": "",
+  "time_sec": 60,
+  "wave_group": "wg_shrine_2",
+  "chests": {
+   "chest_wood": 3,
+   "chest_silver": 0.5,
+   "chest_curse_shrine": 0.3
+  },
+  "emergency_exit_rate": 0.5,
+  "exp_budget": 95,
+  "terrain": {
+   "quicksand_rate": 0.15,
+   "quicksand_slow": 0.4
+  }
+ },
+ {
+  "region_id": "shrine",
+  "floor": 3,
+  "is_boss": false,
+  "boss_id": "",
+  "time_sec": 60,
+  "wave_group": "wg_shrine_3",
+  "chests": {
+   "chest_wood": 3,
+   "chest_silver": 0.5,
+   "chest_curse_shrine": 0.3
+  },
+  "emergency_exit_rate": 0.5,
+  "exp_budget": 130,
+  "terrain": {
+   "quicksand_rate": 0.15,
+   "quicksand_slow": 0.4
+  }
+ },
+ {
+  "region_id": "shrine",
+  "floor": 4,
+  "is_boss": true,
+  "boss_id": "boss_pharaoh_cat",
+  "time_sec": 0,
+  "wave_group": "",
+  "chests": {},
+  "emergency_exit_rate": 0,
+  "exp_budget": 80,
+  "terrain": {}
  }
 ]

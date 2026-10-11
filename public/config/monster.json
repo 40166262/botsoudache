@@ -14,7 +14,8 @@
    "split_count": 2
   },
   "skins": {
-   "garden": "mon_slime"
+   "garden": "mon_slime",
+   "shrine": "mon_slime_sand"
   },
   "is_elite_allowed": true,
   "radius": 0.4,
@@ -31,7 +32,8 @@
   "ai_type": "chase",
   "ai_params": {},
   "skins": {
-   "garden": "mon_slime_mini"
+   "garden": "mon_slime_mini",
+   "shrine": "mon_slime_mini_sand"
   },
   "is_elite_allowed": false,
   "radius": 0.25,
@@ -55,7 +57,8 @@
    "wave_freq": 3
   },
   "skins": {
-   "garden": "mon_bat"
+   "garden": "mon_bat",
+   "shrine": "mon_bat"
   },
   "is_elite_allowed": false,
   "radius": 0.35,
@@ -99,7 +102,8 @@
    "cooldown": 3
   },
   "skins": {
-   "garden": "mon_golem"
+   "garden": "mon_golem",
+   "shrine": "mon_golem"
   },
   "is_elite_allowed": true,
   "radius": 0.55,
@@ -118,7 +122,8 @@
    "drop_rarity": "rare"
   },
   "skins": {
-   "garden": "mon_mimic"
+   "garden": "mon_mimic",
+   "shrine": "mon_mimic"
   },
   "is_elite_allowed": false,
   "radius": 0.45,
@@ -138,10 +143,52 @@
    "bonus_gold": 50
   },
   "skins": {
-   "garden": "mon_thief"
+   "garden": "mon_thief",
+   "shrine": "mon_thief"
   },
   "is_elite_allowed": false,
   "radius": 0.4,
+  "enabled": true
+ },
+ {
+  "id": "mon_scorpion",
+  "name": "沙沙蝎子",
+  "hp": 18,
+  "atk": 3,
+  "move_speed": 0.8,
+  "exp": 1,
+  "gold_drop_rate": 0.3,
+  "ai_type": "chase",
+  "ai_params": {
+   "death_poison": {
+    "radius": 1,
+    "duration": 2,
+    "tick": 0.5,
+    "damage": 3
+   }
+  },
+  "skins": {
+   "shrine": "mon_scorpion"
+  },
+  "is_elite_allowed": true,
+  "radius": 0.4,
+  "enabled": false
+ },
+ {
+  "id": "mon_mummy_cat",
+  "name": "木乃伊喵喵",
+  "hp": 24,
+  "atk": 4,
+  "move_speed": 0.9,
+  "exp": 1,
+  "gold_drop_rate": 0,
+  "ai_type": "chase",
+  "ai_params": {},
+  "skins": {
+   "shrine": "mon_mummy_cat"
+  },
+  "is_elite_allowed": false,
+  "radius": 0.35,
   "enabled": true
  }
 ]

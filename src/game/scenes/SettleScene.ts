@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { hasImg } from '../Atlas';
 import { Cfg, RARITY_COLOR, RARITY_ORDER } from '../../config/Config';
 import { getPlatform } from '../../platform';
 import { BagItem, Save } from '../../save/SaveManager';
@@ -32,7 +33,7 @@ export class SettleScene extends Phaser.Scene {
       this.time.delayedCall(300 + i * 150, () => {
         const g = this.add.graphics(); const rar = o.it.kind === 'treasure' ? Cfg.treasure.find((t) => t.id === o.it.id)?.rarity : null;
         g.fillStyle(C.out); g.fillRoundedRect(x - 36, y - 36, 72, 72, 12); g.fillStyle(rar && !o.lost ? RARITY_COLOR[rar] : 0x9b7a52); g.fillRoundedRect(x - 32, y - 32, 64, 64, 10);
-        const key = o.it.kind === 'treasure' ? (this.textures.exists('icon_' + o.it.id) ? 'icon_' + o.it.id : 'gem_' + (rar ?? 'common')) : o.it.kind === 'blueprint' ? 'icon_blueprint' : Cfg.material.find((m) => m.id === o.it.id)?.icon ?? 'icon_relic_shard';
+        const key = o.it.kind === 'treasure' ? (hasImg(this, 'icon_' + o.it.id) ? 'icon_' + o.it.id : 'gem_' + (rar ?? 'common')) : o.it.kind === 'blueprint' ? 'icon_blueprint' : Cfg.material.find((m) => m.id === o.it.id)?.icon ?? 'icon_relic_shard';
         const ic = this.add.image(x, y - 40, key).setDisplaySize(54, 54); if (o.lost) ic.setTint(0x555555).setAlpha(0.6);
         this.tweens.add({ targets: ic, y, duration: 200, ease: 'Bounce.out' });
         txt(this, x + 22, y + 24, o.it.kind === 'treasure' ? fmt(o.it.value ?? 0) : '×' + o.it.count, 18, o.lost ? '#aaaaaa' : '#fff', '#2b1d14', 4);
