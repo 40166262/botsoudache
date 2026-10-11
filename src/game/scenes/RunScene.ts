@@ -36,7 +36,7 @@ export class RunScene extends Phaser.Scene {
   tutorial = false; lockTipT = 0;
   now = 0; time0 = 0; floorT = 0; timeLeft = 0; collapse = false; paused = false; modal = false; timeScale = 1; slowUntil = 0; slowScale = 1; globalFreeze = 0;
   // 主角
-  px = 0; py = 0; hp = 100; maxHp = 100; atk = 10; baseHp = 100; spd = 3 * CELL; invT = 0; hurtFlash = 0; facing = 1; moving = false; animT = 0; stepT = 0; idleT = 0;
+  px = 0; py = 0; hp = 100; maxHp = 100; atk = 10; baseHp = 100; spd = 3 * CELL; invT = 0; hurtFlash = 0; facing = 1; moving = false; vx = 0; vy = 0; heroLean = 0; animT = 0; stepT = 0; idleT = 0;
   hero!: Img; heroSh!: Img; level = 1; exp = 0; kills = 0; runGold = 0; revived = false; dead = false; extracting = false; bossKilled = false;
   skills = new Map<string, number>(); cdMul = 1; spdMul = 1; pickMul = 1; crit = 0.05; seekerCount = 0; seekerUp = 0; pendingLv = 0; firstPick = true; refreshLeft = 1;
   timers: Record<string, number> = {};
@@ -87,6 +87,7 @@ export class RunScene extends Phaser.Scene {
     this.buildMap();
     this.buildFx();
     this.buildHud();
+    this.buildMinimap();
     this.buildInput();
     const wg = this.tutorial && this.floor === 1 && Cfg.gp.tutorial_wave_group ? Cfg.gp.tutorial_wave_group : fr.wave_group;
     this.waveRows = Cfg.wave.filter((w) => w.wave_group === wg);
@@ -334,7 +335,7 @@ export class RunScene extends Phaser.Scene {
     this.particles = this.add.particles(0, 0, 'dot', { lifespan: 300, speed: { min: 140, max: 320 }, scale: { start: 0.9, end: 0.1 }, alpha: { start: 1, end: 0 }, emitting: false }).setDepth(9000);
     this.sparkP = this.add.particles(0, 0, 'spark', { lifespan: 220, speed: { min: 40, max: 120 }, scale: { start: 1, end: 0 }, emitting: false, blendMode: 'ADD' }).setDepth(9001);
     this.heroSh = this.add.image(this.px, this.py, 'shadow').setScale(1.1);
-    this.hero = this.add.image(this.px, this.py, 'char_hero_idle').setOrigin(0.5, 0.95);
+    this.hero = this.add.sprite(this.px, this.py, 'chr_player_idle_01').setOrigin(0.5, 120 / 128).play('hero_idle') as any;
     this.joyBase = this.add.image(0, 0, 'joy_base').setScrollFactor(0).setDepth(20000).setAlpha(0);
     this.joyKnob = this.add.image(0, 0, 'joy_knob').setScrollFactor(0).setDepth(20001).setAlpha(0);
     // 暗角
@@ -426,8 +427,50 @@ export class RunScene extends Phaser.Scene {
     s.lock.setText(s.safe ? (it?.locked ? '🔒' : '🛡') : '');
   }
   treasureRarity(id: string): Rarity { return Cfg.treasure.find((t) => t.id === id)?.rarity ?? 'common'; }
+  // ======== 小地图（右上角圆形，以主角为中心，1 格 = 4px） ========
+  mm: any = null;
+  buildMinimap() {
+    const S = 4 / CELL; const top = this.topH + 8; const cx = this.W - 98, cy = top + 88, R = 72;
+    const key = 'mm_bg_' + this.floor;
+    if (this.textures.exists(key)) this.textures.remove(key);
+    const tex = this.textures.createCanvas(key, this.gridW * 4, this.gridH * 4)!; const ctx = tex.getContext();
+    ctx.fillStyle = '#5fae3e'; ctx.fillRect(0, 0, this.gridW * 4, this.gridH * 4);
+    ctx.fillStyle = '#ead9a6';
+    for (let y = 0; y < this.gridH; y++) for (let x = 0; x < this.gridW; x++) if (this.isStone(x, y)) ctx.fillRect(x * 4, y * 4, 4, 4);
+    ctx.fillStyle = 'rgba(30,60,30,0.75)';
+    for (const o of this.obst) { ctx.beginPath(); ctx.arc(o.x * S, o.y * S, Math.max(1.5, o.r * S), 0, Math.PI * 2); ctx.fill(); }
+    tex.refresh();
+    const D = 15800;
+    const back = this.add.circle(cx, cy, R + 2, 0x1a120b, 0.55).setScrollFactor(0).setDepth(D);
+    const bg = this.add.image(cx, cy, key).setOrigin(0).setScrollFactor(0).setDepth(D + 1).setAlpha(0.92);
+    const mg = this.make.graphics({}); mg.fillStyle(0xffffff); mg.fillCircle(cx, cy, R); mg.setScrollFactor(0);
+    bg.setMask(mg.createGeometryMask());
+    const frame = this.add.image(cx, cy, 'ui_minimap_frame').setScrollFactor(0).setDepth(D + 3).setDisplaySize(R * 2 + 30, R * 2 + 30);
+    const player = this.add.image(cx, cy, 'ui_minimap_player').setScrollFactor(0).setDepth(D + 2.5).setScale(0.8);
+    this.mm = { cx, cy, R, S, bg, back, frame, player, marks: new Map<any, Img>() };
+  }
+  updateMinimap() {
+    const m = this.mm; if (!m) return;
+    m.bg.setPosition(m.cx - this.px * m.S, m.cy - this.py * m.S);
+    const want: [any, string, number, number, boolean][] = [];
+    for (const c of this.chests) if (!c.opened) want.push([c, 'ui_minimap_chest', c.x, c.y, false]);
+    for (const e of this.exits) if (e.active) want.push([e, e.kind === 'stairs' ? 'ui_minimap_stairs' : 'ui_minimap_portal', e.x, e.y, true]);
+    if (this.boss?.alive) want.push([this.boss, 'ui_minimap_boss', this.boss.x, this.boss.y, true]);
+    const seen = new Set();
+    for (const [o, key, wx, wy, pin] of want) {
+      let dx = (wx - this.px) * m.S, dy = (wy - this.py) * m.S; const d = Math.hypot(dx, dy); const lim = m.R - 10;
+      let img = m.marks.get(o);
+      if (d > lim && !pin) { img?.setVisible(false); seen.add(o); continue; }
+      if (d > lim) { dx *= lim / d; dy *= lim / d; } // 光门、阶梯、Boss 在范围外时贴在圆边上
+      if (!img) { img = this.add.image(0, 0, key).setScrollFactor(0).setDepth(15802).setScale(0.7); m.marks.set(o, img); }
+      img.setVisible(true).setPosition(m.cx + dx, m.cy + dy).setAlpha(d > lim ? 0.75 + Math.sin(this.now * 6) * 0.25 : 1);
+      seen.add(o);
+    }
+    for (const [o, img] of m.marks) if (!seen.has(o)) { img.destroy(); m.marks.delete(o); }
+  }
+  skillIcon(id: string) { const k = 'icon_' + id; return this.textures.exists(k) ? k : 'ic_' + id; }
   itemIcon(it: BagItem) {
-    if (it.kind === 'treasure') return 'gem_' + this.treasureRarity(it.id);
+    if (it.kind === 'treasure') { const k = 'icon_' + it.id; return this.textures.exists(k) ? k : 'gem_' + this.treasureRarity(it.id); }
     if (it.kind === 'blueprint') return 'icon_blueprint';
     return Cfg.material.find((m) => m.id === it.id)?.icon ?? 'icon_relic_shard';
   }
@@ -448,7 +491,9 @@ export class RunScene extends Phaser.Scene {
   pulse(o: any, s = 1.2) { this.tweens.killTweensOf(o); o.setScale(1); this.tweens.add({ targets: o, scale: s, duration: 50, yoyo: true, ease: 'Quad.out' }); }
   banner(title: string, sub: string) {
     const y = this.topH + 170;
-    const c = this.add.container(this.W / 2, y).setScrollFactor(0).setDepth(17000);
+    // 新横幅顶掉旧的，不叠字
+    const old: any = (this as any).curBanner; if (old?.active) { this.tweens.killTweensOf(old); old.destroy(); }
+    const c = this.add.container(this.W / 2, y).setScrollFactor(0).setDepth(17000); (this as any).curBanner = c;
     const g = this.add.graphics(); g.fillStyle(0x000000, 0.55); g.fillRoundedRect(-330, -60, 660, 120, 30);
     c.add([g, txt(this, 0, -16, title, 40, '#ffe27a'), txt(this, 0, 32, sub, 24, '#fff')]);
     c.setAlpha(0).setScale(0.8); this.tweens.add({ targets: c, alpha: 1, scale: 1, duration: 250, ease: 'Back.out' });
@@ -507,6 +552,7 @@ export class RunScene extends Phaser.Scene {
     const frozen = this.globalFreeze > 0;
     if (!frozen) this.updatePlayer(dt);
     this.updateCamera();
+    this.updateMinimap();
     this.updateTimer(dt);
     this.updateSpawns(dt);
     this.rebuildGrid();
@@ -530,24 +576,37 @@ export class RunScene extends Phaser.Scene {
     const k = this.keys; if (k) { if (k.A.isDown || k.LEFT.isDown) mx = -1; if (k.D.isDown || k.RIGHT.isDown) mx = 1; if (k.W.isDown || k.UP.isDown) my = -1; if (k.S.isDown || k.DOWN.isDown) my = 1; }
     const m = Math.hypot(mx, my); if (m > 1) { mx /= m; my /= m; }
     const lockMove = this.channel?.kind === 'scroll';
-    this.moving = m > 0.15 && !lockMove && !this.dead;
+    const want = m > 0.15 && !lockMove && !this.dead;
+    // 速度平滑：起步约 0.08 秒到全速，松手约 0.06 秒停下（不再瞬间启停）
+    const tx = want ? mx * this.spd : 0, ty = want ? my * this.spd : 0;
+    const acc = 1 - Math.exp(-dt * (want ? 26 : 34));
+    this.vx += (tx - this.vx) * acc; this.vy += (ty - this.vy) * acc;
+    const spdNow = Math.hypot(this.vx, this.vy);
+    this.moving = want || spdNow > this.spd * 0.25;
+    if (this.dead || lockMove) { this.vx = this.vy = 0; this.moving = false; }
     if (this.moving) {
-      let nx = this.px + mx * this.spd * dt, ny = this.py + my * this.spd * dt;
+      let nx = this.px + this.vx * dt, ny = this.py + this.vy * dt;
       for (const o of this.obst) { const dd = Math.hypot(nx - o.x, ny - o.y); const rr = o.r + 22; if (dd < rr && dd > 0) { nx = o.x + ((nx - o.x) / dd) * rr; ny = o.y + ((ny - o.y) / dd) * rr; } }
       if (this.isBoss && this.bossStarted) ny = Math.min(ny, this.bossRoomY - 20);
       this.px = clamp(nx, 30, this.mapW - 30); this.py = clamp(ny, 40, this.mapH - 20);
-      if (Math.abs(mx) > 0.1) this.facing = mx > 0 ? 1 : -1;
+      if (want && Math.abs(mx) > 0.1) this.facing = mx > 0 ? 1 : -1;
       this.animT += dt; this.stepT += dt; this.idleT = 0;
       if (this.stepT > 0.5 * CELL / this.spd) { this.stepT = 0; this.particles.emitParticleAt(this.px - this.facing * 10, this.py - 4, 1); this.dust(); }
     } else { this.animT = 0; this.idleT += dt; }
-    // 动画：2 帧跑动 + 程序弹跳
-    const runF = Math.floor(this.animT * 10) % 2;
-    let key = this.moving ? (runF ? 'char_hero_run_02' : 'char_hero_run_01') : 'char_hero_idle';
-    if (this.hurtFlash > 0) key = 'char_hero_hurt';
-    if (this.dead) key = 'char_hero_dead';
-    this.hero.setTexture(key).setFlipX(this.facing < 0).setPosition(this.px, this.py - (this.moving ? Math.abs(Math.sin(this.animT * 20)) * 6 : 0)).setDepth(this.py);
-    const breathe = this.moving ? 1 : 1 + Math.sin(this.now * 3) * 0.025;
-    this.hero.setScale(1 / breathe, breathe);
+    // 动画：序列帧（跑 8 帧 / 待机 6 帧 / 受击 2 帧）+ 前倾 + 左右轻摆
+    const hs: any = this.hero;
+    if (this.dead) { hs.anims.stop(); hs.setTexture('chr_player_dead_01'); }
+    else if (!this.extracting) {
+      const anim = this.hurtFlash > 0 ? 'hero_hurt' : this.moving ? 'hero_run' : 'hero_idle';
+      if (hs.anims.currentAnim?.key !== anim) hs.play(anim, true);
+      if (anim === 'hero_run') hs.anims.timeScale = clamp(spdNow / this.spd, 0.6, 1.3);
+    }
+    const k01 = clamp(spdNow / this.spd, 0, 1);
+    const lean = this.facing * 0.1 * k01 + Math.sin(this.animT * 12 * Math.PI / 4) * 0.035 * k01; // 前倾约 6°，每两步左右摆一次
+    this.heroLean += (lean - this.heroLean) * (1 - Math.exp(-dt * 16));
+    hs.setFlipX(this.facing < 0).setDepth(this.py).setRotation(this.heroLean); if (!this.extracting) hs.setPosition(this.px, this.py);
+    const breathe = this.moving ? 1 : 1 + Math.sin(this.now * 3) * 0.015;
+    hs.setScale(1 / breathe, breathe);
     this.heroSh.setPosition(this.px, this.py + 2).setDepth(this.py - 1);
     if (this.invT > 0) { this.invT -= dt; this.hero.setAlpha(Math.floor(this.invT * 20) % 2 ? 0.45 : 1); } else this.hero.setAlpha(1);
     if (this.hurtFlash > 0) { this.hurtFlash -= dt; this.hero.setTintFill(0xff3b3b); if (Math.floor(this.hurtFlash / 0.08) % 2) this.hero.clearTint(); } else this.hero.clearTint();
@@ -560,7 +619,7 @@ export class RunScene extends Phaser.Scene {
   updateCamera() {
     const cam = this.cameras.main;
     const midY = (this.topH + this.barTop) / 2;
-    cam.setScroll(Math.round(this.px - this.W / 2 + this.juice.ox), Math.round(this.py - midY + this.juice.oy));
+    cam.setScroll(this.px - this.W / 2 + this.juice.ox, this.py - midY + this.juice.oy);
   }
 
   updateTimer(dt: number) {
@@ -1008,8 +1067,8 @@ export class RunScene extends Phaser.Scene {
 
   // ======== 掉落 ========
   spawnDrop(kind: 'exp' | 'gold' | 'heart' | 'magnet', x: number, y: number, value: number) {
-    const key = kind === 'exp' ? 'icon_exp_star' : kind === 'gold' ? 'icon_coin' : kind;
-    const sc = 1.3 * (kind === 'exp' ? (value >= 50 ? 0.5 : value >= 10 ? 0.38 : 0.24) : kind === 'gold' ? 0.26 : 0.8);
+    const key = kind === 'exp' ? 'icon_exp_star' : kind === 'gold' ? 'icon_coin' : 'obj_pickup_' + kind;
+    const sc = kind === 'heart' || kind === 'magnet' ? 1.1 : 1.3 * (kind === 'exp' ? (value >= 50 ? 0.5 : value >= 10 ? 0.38 : 0.24) : 0.26);
     const spr = this.add.image(x, y, key).setScale(sc).setDepth(y);
     const a = Math.random() * Math.PI * 2, dd = this.rng.range(0.3, 0.8) * CELL;
     const d: Drop = { kind, spr, x, y, z: 0, value, st: 'bounce', t: 0, dur: (Cfg.juice.bounce_exp?.duration_ms ?? 300) / 1000, h: Cfg.juice.bounce_exp?.amplitude ?? 24, sx: x, sy: y, tx: clamp(x + Math.cos(a) * dd, 20, this.mapW - 20), ty: clamp(y + Math.sin(a) * dd, 20, this.mapH - 20), vx: 0, vy: 0, mt: 0 };
@@ -1397,7 +1456,7 @@ export class RunScene extends Phaser.Scene {
     const beam = this.add.graphics().setBlendMode('ADD').setDepth(this.py + 10);
     beam.fillGradientStyle(0x9ff8ff, 0x9ff8ff, 0x9ff8ff, 0x9ff8ff, 0, 0, 0.9, 0.9); beam.fillRect(this.px - 60, this.py - 900, 120, 900);
     beam.setAlpha(0); this.tweens.add({ targets: beam, alpha: 1, duration: 250 });
-    this.hero.setTexture('char_hero_win');
+    (this.hero as any).anims?.stop(); this.hero.setTexture('chr_player_win_01').setRotation(0);
     this.tweens.add({ targets: [this.hero], y: this.py - 300, alpha: 0, delay: 300, duration: 700, ease: 'Quad.in' });
     this.time.delayedCall(800, () => { const w = this.add.rectangle(0, 0, this.W, this.H, 0xffffff, 0).setOrigin(0).setScrollFactor(0).setDepth(30000); this.tweens.add({ targets: w, alpha: 1, duration: 300, onComplete: () => this.endRun('extract') }); });
   }
@@ -1534,7 +1593,7 @@ export class RunScene extends Phaser.Scene {
       const col = !s ? 0x66cc66 : s.category === 'active' ? 0xff9a3c : 0x5aa8ff;
       g.fillStyle(C.out); g.fillRoundedRect(-w / 2 - 5, -h / 2 - 5, w + 10, h + 14, 24); g.fillStyle(col); g.fillRoundedRect(-w / 2, -h / 2, w, h, 20); g.fillStyle(0xfff6e0); g.fillRoundedRect(-w / 2 + 8, -h / 2 + 8, w - 16, h - 16, 16);
       card.add(g);
-      card.add(this.add.image(0, -h / 2 + 90, s ? 'ic_' + s.id : 'heart').setDisplaySize(124, 124));
+      card.add(this.add.image(0, -h / 2 + 90, s ? this.skillIcon(s.id) : 'obj_pickup_heart').setDisplaySize(124, s ? 124 : 115));
       card.add(txt(this, 0, -h / 2 + 180, s ? s.name : '回复', 32, '#4a3520', '#ffffff', 5));
       card.add(txt(this, 0, -h / 2 + 222, s ? (lvNow ? `Lv.${lvNow} → ${lvNow + 1}` : '新！') : '', 26, lvNow ? '#2e7d32' : '#e65100', '#ffffff', 4));
       const desc = s ? this.descOf(s, lvNow + 1) : '立即回复 30% 生命';
@@ -1604,7 +1663,7 @@ export class RunScene extends Phaser.Scene {
     // 画面变灰 + 慢动作 0.5 秒
     const fx = (this.cameras.main as any).postFX?.addColorMatrix?.(); fx?.grayscale(0.85);
     this.slowScale = 0.3; this.slowUntil = this.now + 0.5;
-    this.hero.setTexture('char_hero_dead');
+    (this.hero as any).anims?.stop(); this.hero.setTexture('chr_player_dead_01').setRotation(0);
     this.time.delayedCall(600, () => { this.modal = true; this.openRevive(fx); });
   }
   openRevive(fx: any) {

@@ -19,7 +19,7 @@ export class SettleScene extends Phaser.Scene {
     const title = r.success ? (r.res.boss_killed ? '通关撤离！' : '撤离成功！') : r.protectedRun ? '新手保护生效' : '探险失败…';
     const t = txt(this, W / 2, top + 40, title, 72, r.success ? '#ffe27a' : r.protectedRun ? '#a8ff9c' : '#ff9c9c', '#2b1d14', 12).setScale(0.3);
     this.tweens.add({ targets: t, scale: 1, duration: 400, ease: 'Back.out' });
-    this.add.image(W / 2, top + 250, r.success ? 'char_hero_win' : 'char_hero_dead').setScale(1.6);
+    this.add.image(W / 2, top + 250, r.success ? 'chr_player_win_01' : 'chr_player_dead_01').setScale(1.5);
     txt(this, W / 2, top + 370, `第 ${r.res.floor} 层 · 击败 ${r.res.kills} 只 · 用时 ${Math.floor(r.res.time_s / 60)}:${String(r.res.time_s % 60).padStart(2, '0')}`, 26, '#fff', '#2b1d14', 5);
 
     // 物品格：一件件"啪"地落进格子（间隔 150ms）
@@ -32,7 +32,7 @@ export class SettleScene extends Phaser.Scene {
       this.time.delayedCall(300 + i * 150, () => {
         const g = this.add.graphics(); const rar = o.it.kind === 'treasure' ? Cfg.treasure.find((t) => t.id === o.it.id)?.rarity : null;
         g.fillStyle(C.out); g.fillRoundedRect(x - 36, y - 36, 72, 72, 12); g.fillStyle(rar && !o.lost ? RARITY_COLOR[rar] : 0x9b7a52); g.fillRoundedRect(x - 32, y - 32, 64, 64, 10);
-        const key = o.it.kind === 'treasure' ? 'gem_' + (rar ?? 'common') : o.it.kind === 'blueprint' ? 'icon_blueprint' : Cfg.material.find((m) => m.id === o.it.id)?.icon ?? 'icon_relic_shard';
+        const key = o.it.kind === 'treasure' ? (this.textures.exists('icon_' + o.it.id) ? 'icon_' + o.it.id : 'gem_' + (rar ?? 'common')) : o.it.kind === 'blueprint' ? 'icon_blueprint' : Cfg.material.find((m) => m.id === o.it.id)?.icon ?? 'icon_relic_shard';
         const ic = this.add.image(x, y - 40, key).setDisplaySize(54, 54); if (o.lost) ic.setTint(0x555555).setAlpha(0.6);
         this.tweens.add({ targets: ic, y, duration: 200, ease: 'Bounce.out' });
         txt(this, x + 22, y + 24, o.it.kind === 'treasure' ? fmt(o.it.value ?? 0) : '×' + o.it.count, 18, o.lost ? '#aaaaaa' : '#fff', '#2b1d14', 4);

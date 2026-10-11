@@ -41,9 +41,8 @@ export class MenuScene extends Phaser.Scene {
     txt(this, W / 2, top + 205, '搜 · 打 · 撤', 32, '#fff3d6', '#2b1d14', 6);
 
     // 主角
-    const hero = this.add.image(W / 2, heroY, 'char_hero_idle').setOrigin(0.5, 1).setScale(2.2);
+    const hero = this.add.sprite(W / 2, heroY, 'chr_player_idle_01').setOrigin(0.5, 120 / 128).setScale(2.1).play('hero_idle');
     this.add.image(W / 2, heroY, 'shadow').setScale(2.4, 2).setDepth(-1);
-    this.tweens.add({ targets: hero, scaleY: 2.27, scaleX: 2.15, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     const lvTag = txt(this, W / 2, heroY + 34, `探险家 Lv.${d.player.level}`, 30, '#fff', '#2b1d14', 6);
 
     // 区域卡
@@ -132,7 +131,7 @@ export class MenuScene extends Phaser.Scene {
     const d = Save.data;
     const { c, cx, top } = this.openModal('训练营', 620);
     const L = d.player.level; const cur = Cfg.charLv(L), nxt = Cfg.charLv(L + 1);
-    c.add(this.add.image(cx - 180, top + 230, 'char_hero_win').setScale(1.5));
+    c.add(this.add.image(cx - 180, top + 230, 'chr_player_win_01').setScale(1.4));
     c.add(txt(this, cx + 80, top + 120, `Lv.${L}  →  Lv.${L + 1}`, 40, '#4a3520', '#fff', 6));
     c.add(txt(this, cx + 80, top + 190, `生命 ${cur.hp} → ${nxt.hp}`, 30, '#c0392b', '#fff', 5));
     c.add(txt(this, cx + 80, top + 240, `攻击 ${cur.atk} → ${nxt.atk}`, 30, '#e67e22', '#fff', 5));
