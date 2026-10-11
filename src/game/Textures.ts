@@ -9,7 +9,7 @@ export function makeTextures(s: Phaser.Scene) {
   const tex = (key: string, w: number, h: number, draw: () => void) => { g.clear(); draw(); g.generateTexture(key, w, h); };
 
   tex('shadow_e', 64, 16, () => { g.fillStyle(0xffffff, 1); g.fillEllipse(32, 8, 62, 15); });
-  tex('shadow', 64, 24, () => { g.fillStyle(0x000000, 0.28); g.fillEllipse(32, 12, 60, 20); });
+  tex('shadow', 64, 24, () => { g.fillStyle(0x1e3c1e, 0.27); g.fillEllipse(32, 12, 60, 20); });
   tex('dot', 16, 16, () => { g.fillStyle(0xffffff); g.fillCircle(8, 8, 8); });
   tex('px', 4, 4, () => { g.fillStyle(0xffffff); g.fillRect(0, 0, 4, 4); });
   tex('pellet', 24, 24, () => { g.fillStyle(OUT); g.fillCircle(12, 12, 10); g.fillStyle(0xffe27a); g.fillCircle(12, 12, 7); g.fillStyle(0xffffff); g.fillCircle(10, 10, 3); });
