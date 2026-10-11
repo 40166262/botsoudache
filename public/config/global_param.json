@@ -183,5 +183,18 @@
   "castle": 1800
  },
  "invite_mode": "share_only",
- "legend_ignore_depth_and_cap": true
+ "legend_ignore_depth_and_cap": true,
+ "tutorial_wave_group": "wg_tutorial",
+ "tutorial_chests": {
+  "chest_wood": 3
+ },
+ "tutorial_monster_atk_mul": 0.5,
+ "tutorial_split_rate": 0,
+ "tutorial_first_chest_rarity": "uncommon",
+ "first_chest_near_spawn": [
+  4,
+  6
+ ],
+ "mimic_min_floor": 2,
+ "chest_hint_radius_cells": 12
 }

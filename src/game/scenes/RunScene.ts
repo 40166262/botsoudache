@@ -82,12 +82,13 @@ export class RunScene extends Phaser.Scene {
     Sfx.vol = Save.data.settings.sfx;
     const fr = Cfg.floorRow('garden', this.floor); this.isBoss = fr.is_boss; this.regionCoef = Cfg.regionRow('garden').region_coef;
     this.recalc(false);
+    this.tutorial = Save.data.progress.total_runs === 0 && Save.data.progress.tutorial_step === 0;
     this.buildMap();
     this.buildFx();
     this.buildHud();
     this.buildInput();
-    this.waveRows = Cfg.wave.filter((w) => w.wave_group === fr.wave_group);
-    this.tutorial = Save.data.progress.total_runs === 0 && Save.data.progress.tutorial_step === 0;
+    const wg = this.tutorial && this.floor === 1 && Cfg.gp.tutorial_wave_group ? Cfg.gp.tutorial_wave_group : fr.wave_group;
+    this.waveRows = Cfg.wave.filter((w) => w.wave_group === wg);
     this.timeLeft = this.isBoss ? 0 : (this.tutorial && this.floor === 1 ? Cfg.gp.tutorial_floor_time_sec ?? fr.time_sec : fr.time_sec); this.floorT = 0;
     if (!this.isBoss && this.floor >= 2 && this.rng.chance(Cfg.gp._thief_rate)) this.thiefAt = this.rng.range(10, 35); else this.thiefAt = -1;
     const er = fr.emergency_exit_rate ?? Cfg.gp.emergency_exit_rate;
@@ -158,13 +159,19 @@ export class RunScene extends Phaser.Scene {
     for (let k = 0; k < Cfg.gp._pot_count; k++) { const p = this.freeSpot(3); this.pots.push({ x: p.x, y: p.y, spr: this.add.image(p.x, p.y, 'prop_pot').setOrigin(0.5, 0.9).setDepth(p.y), broken: false }); }
     // 宝箱（寻宝直觉加成数量）
     const fr = Cfg.floorRow('garden', this.floor);
-    for (const [id, nRaw] of Object.entries(fr.chests)) {
+    const chestTable: Record<string, number> = this.tutorial && this.floor === 1 && Cfg.gp.tutorial_chests ? Cfg.gp.tutorial_chests : fr.chests;
+    let firstChest = true;
+    for (const [id, nRaw] of Object.entries(chestTable)) {
       let n = nRaw >= 1 ? nRaw : (this.rng.chance(nRaw) ? 1 : 0);
       n = Math.floor(n * (1 + this.seekerCount) + (this.rng.chance((n * (1 + this.seekerCount)) % 1) ? 1 : 0));
       for (let k = 0; k < n; k++) {
-        const p = this.freeSpot(5);
-        const mimic = id === 'chest_wood' && this.rng.chance(Cfg.gp._mimic_rate);
-        this.addChest(id, p.x, p.y, mimic);
+        // 第一个宝箱刷在出生点 4~6 格内（教开箱）
+        const near = Cfg.gp.first_chest_near_spawn as number[] | undefined;
+        const p = firstChest && near ? this.ringSpot(near[0], near[1]) : this.freeSpot(5);
+        const mimic = !firstChest && id === 'chest_wood' && this.floor >= (Cfg.gp.mimic_min_floor ?? 1) && this.rng.chance(Cfg.gp._mimic_rate);
+        const c = this.addChest(id, p.x, p.y, mimic);
+        if (firstChest && this.tutorial) (c as any).minRarity = Cfg.gp.tutorial_first_chest_rarity ?? null;
+        firstChest = false;
       }
     }
   }
@@ -186,6 +193,16 @@ export class RunScene extends Phaser.Scene {
     if (this.rng.chance(0.5) && key !== 'prop_statue') img.setFlipX(true);
     if (solid) this.obst.push({ x, y: y - 10, r: (key === 'prop_rock' ? 0.75 : 0.6) * CELL * sc });
     return img;
+  }
+  ringSpot(a: number, b: number) {
+    for (let k = 0; k < 60; k++) {
+      const ang = this.rng.range(0, Math.PI * 2), r = this.rng.range(a, b) * CELL;
+      const x = this.px + Math.cos(ang) * r, y = this.py + Math.sin(ang) * r;
+      if (x < CELL * 1.5 || y < CELL * 1.5 || x > this.mapW - CELL * 1.5 || y > this.mapH - CELL * 1.5) continue;
+      if (this.obst.some((o) => dist2(x, y, o.x, o.y) < (o.r + CELL) ** 2)) continue;
+      return { x, y };
+    }
+    return this.freeSpot(a);
   }
   freeSpot(minDist: number) {
     for (let k = 0; k < 60; k++) {
@@ -250,7 +267,7 @@ export class RunScene extends Phaser.Scene {
     const cdBox = sf(this.add.graphics()); cdBox.fillStyle(C.out); cdBox.fillRoundedRect(W - 330, top + 12, 150, 66, 18); cdBox.fillStyle(0x3a2a1e); cdBox.fillRoundedRect(W - 325, top + 17, 140, 56, 14);
     h.cd = sf(txt(this, W - 255, top + 45, '1:00', 36, '#fff'));
     h.evac = sf(button(this, W - 88, top + 46, 140, 76, '撤离', () => this.useScroll(), 0x2fb39a, 0x1d7a69, 32));
-    h.scrollN = sf(txt(this, W - 30, top + 16, '', 22, '#fff'));
+    h.scrollN = sf(txt(this, W - 40, top + 26, '', 22, '#fff', '#b03a2e', 6));
     // HP
     h.hpG = sf(this.add.graphics()); h.hpT = sf(txt(this, 180, top + 112, '', 22));
     h.lv = sf(txt(this, 395, top + 112, 'Lv.1', 28, '#ffe27a'));
@@ -550,6 +567,7 @@ export class RunScene extends Phaser.Scene {
     const mul = boss ? 1 : this.monMul();
     let hp = boss ? boss.hp : def ? def.hp * mul : 1e9, atk = boss ? boss.atk : def ? def.atk * mul : 0;
     if (elite) { hp *= gp._elite_hp_mul; atk *= gp._elite_atk_mul; }
+    if (this.tutorial && !boss) atk *= gp.tutorial_monster_atk_mul ?? 1;
     const sc = elite ? gp._elite_scale : 1;
     const spr = this.add.image(x, y, key).setOrigin(0.5, 0.92).setScale(sc);
     const sh = this.add.image(x, y, 'shadow').setScale((spr.width / 60) * sc, sc);
@@ -676,7 +694,7 @@ export class RunScene extends Phaser.Scene {
     const sq = Cfg.juice.squash_monster_hit; if (sq && !e.boss) { this.tweens.killTweensOf(e.spr); e.spr.setScale(e.baseSX * (1 + sq.amplitude), e.baseSY * (1 - sq.amplitude)); this.tweens.add({ targets: e.spr, scaleX: e.baseSX, scaleY: e.baseSY, duration: sq.duration_ms, ease: 'Back.out' }); }
     if (!e.boss && opt.kx !== undefined) { const kb = (e.elite ? 0.05 : 0.15) * CELL; const l = Math.hypot(opt.kx, opt.ky!) || 1; e.kbx += (opt.kx / l) * kb; e.kby += (opt.ky! / l) * kb; }
     if (isCrit) { const hs = this.juice.hitstop('hitstop_crit', this.time.now); if (hs) e.freezeT = hs; Sfx.play('sfx_crit'); } else Sfx.play('sfx_hit', 0.9 + Math.random() * 0.3, 0.04);
-    this.dmgText(e.x, e.y - e.spr.displayHeight * 0.8, dmg, isCrit ? 'crit' : 'normal');
+    this.dmgText(e.x, e.y - e.spr.displayHeight * 0.8, dmg, isCrit ? 'crit' : 'normal', e);
     if (e.hp <= 0) this.kill(e);
   }
   kill(e: Enemy) {
@@ -701,7 +719,7 @@ export class RunScene extends Phaser.Scene {
       if (Math.random() < 0.5) this.spawnItem({ id: 'shard', count: 1, kind: 'material' }, e.x, e.y);
       const hs = this.juice.hitstop('hitstop_elite_kill', this.time.now); if (hs) this.globalFreeze = hs; this.juice.shake('shake_elite_die');
     }
-    if (def.ai_type === 'chase' && def.ai_params.split_id && Math.random() < def.ai_params.split_rate) for (let i = 0; i < def.ai_params.split_count; i++) this.spawnEnemy(def.ai_params.split_id, e.x + (i ? 20 : -20), e.y);
+    if (def.ai_type === 'chase' && def.ai_params.split_id && Math.random() < (this.tutorial && Cfg.gp.tutorial_split_rate != null ? Cfg.gp.tutorial_split_rate : def.ai_params.split_rate)) for (let i = 0; i < def.ai_params.split_count; i++) this.spawnEnemy(def.ai_params.split_id, e.x + (i ? 20 : -20), e.y);
     if (def.ai_type === 'mimic') { this.spawnItem(this.rollTreasure('rare', false), e.x, e.y); }
     if (def.ai_type === 'thief') {
       if (e.stolen) { this.spawnItem(e.stolen, e.x, e.y); this.toast('抢回了宝物！', '#a8ff9c'); }
@@ -731,7 +749,16 @@ export class RunScene extends Phaser.Scene {
   }
 
   // ======== 飘字（同屏最多 30 个） ========
-  dmgText(x: number, y: number, v: number, kind: 'normal' | 'crit' | 'hurt' | 'heal' | 'gold') {
+  dmgText(x: number, y: number, v: number, kind: 'normal' | 'crit' | 'hurt' | 'heal' | 'gold', target?: any) {
+    // 同一目标 0.3 秒内的普通伤害合并成一个数字（数字变大、轻弹一下）
+    if (target && kind === 'normal') {
+      const old: any = this.dmgTexts.find((t: any) => t.target === target && t.kind === 'normal' && t.life < 0.3);
+      if (old) { old.v += v; old.setText(String(old.v)); old.life = 0; old.x0 = x; old.y0 = y - old.stackOff; old.setFontSize(Math.min(40, 28 + Math.log2(1 + old.hits++) * 4) + 'px'); old.setScale(1.25); this.tweens.add({ targets: old, scale: 1, duration: 100 }); return; }
+    }
+    // 错开：附近已有的飘字越多，新的越往上
+    let stack = 0; for (const t of this.dmgTexts as any[]) if (t.life < 0.45 && Math.abs(t.x0 - x) < 70 && Math.abs(t.y0 - y) < 90) stack++;
+    const stackOff = Math.min(stack, 4) * 30;
+    y -= stackOff; x += (stack % 2 ? 1 : -1) * Math.min(stack, 4) * 14;
     if (this.dmgTexts.length >= 30) { const i = this.dmgTexts.findIndex((t: any) => t.kind === 'normal'); if (i >= 0 && kind !== 'crit' && kind !== 'hurt') return; if (i >= 0) { this.dmgTexts[i].destroy(); this.dmgTexts.splice(i, 1); } }
     const style: any = { fontFamily: FONT, fontStyle: 'bold', stroke: '#1a0f08', strokeThickness: 6 };
     let s = String(v), size = 28, color = '#ffffff';
@@ -741,7 +768,7 @@ export class RunScene extends Phaser.Scene {
     if (kind === 'gold') { s = '+' + v; size = 24; color = '#ffd84a'; }
     const t: any = this.add.text(x + (Math.random() - 0.5) * 20, y, s, { ...style, fontSize: size + 'px', color }).setOrigin(0.5).setDepth(12000);
     if (kind === 'crit') t.setGradient?.(0);
-    t.kind = kind; t.life = 0; t.dur = kind === 'crit' ? 0.8 : 0.6; t.y0 = t.y; t.x0 = t.x;
+    t.kind = kind; t.target = target; t.v = v; t.hits = 1; t.stackOff = stackOff; t.life = 0; t.dur = kind === 'crit' ? 0.8 : 0.6; t.y0 = t.y; t.x0 = t.x;
     if (kind === 'crit') { t.setScale(1.5); this.tweens.add({ targets: t, scale: 1, duration: 120, ease: 'Back.out' }); }
     this.dmgTexts.push(t);
   }
@@ -1119,7 +1146,16 @@ export class RunScene extends Phaser.Scene {
 
   // ======== 宝箱 / 陶罐 ========
   updateChests(dt: number) {
+    const cam = this.cameras.main; const hintR = (Cfg.gp.chest_hint_radius_cells ?? 12) * CELL;
     for (const c of this.chests) {
+      // 屏幕外 12 格内的未开宝箱：屏幕边缘金色箭头（和光门的青色区分）
+      let arr: Img = (c as any).arrow;
+      if (!arr) { arr = (c as any).arrow = this.add.image(0, 0, 'arrow_ind').setScrollFactor(0).setDepth(15400).setTint(0xffc533).setScale(0.8); }
+      const sx = c.x - cam.scrollX, sy = c.y - cam.scrollY;
+      const off = sx < 30 || sx > this.W - 30 || sy < this.topH + 30 || sy > this.barTop - 30;
+      const show = !c.opened && !c.mimic && off && dist2(c.x, c.y, this.px, this.py) < hintR * hintR;
+      arr.setVisible(show);
+      if (show) { const cx = this.W / 2, cy = (this.topH + this.barTop) / 2; const a = Math.atan2(sy - cy, sx - cx); const hw = this.W / 2 - 46, hh = (this.barTop - this.topH) / 2 - 46; const t = Math.min(hw / Math.abs(Math.cos(a) || 1e-6), hh / Math.abs(Math.sin(a) || 1e-6)); arr.setPosition(cx + Math.cos(a) * t, cy + Math.sin(a) * t).setRotation(a).setAlpha(0.75 + Math.sin(this.now * 6) * 0.25); }
       if (c.opened) continue;
       const near = dist2(c.x, c.y, this.px, this.py) < (Cfg.gp._chest_open_dist * CELL) ** 2;
       const row = Cfg.chestRow(c.id);
@@ -1145,7 +1181,7 @@ export class RunScene extends Phaser.Scene {
     this.tweens.add({ targets: glow, scale: 1.4, alpha: 0, duration: 450, onComplete: () => glow.destroy() });
     // 盖子弹开 → 停顿 150ms → 物品依次喷出（间隔 80ms）
     const items: BagItem[] = [];
-    for (let i = 0; i < row.item_count; i++) items.push(this.rollTreasure(null, row.apply_depth_coef, row.rarity_weights));
+    for (let i = 0; i < row.item_count; i++) items.push(this.rollTreasure(i === 0 ? ((c as any).minRarity ?? null) : null, row.apply_depth_coef, row.rarity_weights));
     for (const [m, [a, b]] of Object.entries(row.materials)) { const n = this.rng.int(a, b); if (n > 0) items.push({ id: m, count: n, kind: 'material' }); }
     if ((row as any).blueprint_rate && this.rng.chance((row as any).blueprint_rate)) items.push({ id: 'bp_random', count: 1, kind: 'blueprint' });
     items.forEach((it, i) => this.spawnItem(it, c.x, c.y - 20, 0.15 + i * 0.08));

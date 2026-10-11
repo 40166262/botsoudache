@@ -1,5 +1,25 @@
 [
  {
+  "wave_group": "wg_tutorial",
+  "t_start": 0,
+  "t_end": 30,
+  "spawn_per_10s": 3,
+  "monster_weights": {
+   "mon_slime": 100
+  },
+  "elite_at": []
+ },
+ {
+  "wave_group": "wg_tutorial",
+  "t_start": 30,
+  "t_end": 999,
+  "spawn_per_10s": 5,
+  "monster_weights": {
+   "mon_slime": 100
+  },
+  "elite_at": []
+ },
+ {
   "wave_group": "wg_garden_1",
   "t_start": 0,
   "t_end": 20,

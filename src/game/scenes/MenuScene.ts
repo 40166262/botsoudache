@@ -13,18 +13,22 @@ export class MenuScene extends Phaser.Scene {
   private modal: Phaser.GameObjects.Container | null = null;
 
   create(data: { fromBoot?: boolean; again?: boolean }) {
+    const g: any = this.game; if (g.__pendingH) { const nh = g.__pendingH; g.__pendingH = 0; this.scale.setGameSize(750, nh); }
     const { width: W, height: H } = this.scale;
     const sa = safeInsets(this);
+    // 版面从底部往上排，长屏/短屏都不挤（底部菜单 → 新手保护 → 出发 → 区域卡 → 主角）
+    const by = H - sa.bottom - 70;
+    const btnY = by - 190, regY = btnY - 150, heroY = regY - 110;
     // 背景：花园地面 + 暖色暗角
     this.add.tileSprite(0, 0, W, H, 'tile_garden_grass').setOrigin(0).setTileScale(1);
     const v = this.add.graphics(); v.fillGradientStyle(0x1c120a, 0x1c120a, 0x1c120a, 0x1c120a, 0.55, 0.55, 0, 0); v.fillRect(0, 0, W, H * 0.35);
     v.fillGradientStyle(0x1c120a, 0x1c120a, 0x1c120a, 0x1c120a, 0, 0, 0.7, 0.7); v.fillRect(0, H * 0.6, W, H * 0.4);
     // 装饰
-    this.add.image(90, H * 0.52, 'prop_pillar').setOrigin(0.5, 1).setScale(1.1);
-    this.add.image(W - 80, H * 0.55, 'prop_statue').setOrigin(0.5, 1).setScale(1.1).setFlipX(true);
-    this.add.image(150, H * 0.62, 'prop_bush_flower').setOrigin(0.5, 1);
-    this.add.image(W - 160, H * 0.64, 'prop_bush_flower').setOrigin(0.5, 1).setScale(0.8);
-    const portal = this.add.image(W / 2, H * 0.47, 'prop_portal_evac').setOrigin(0.5, 1).setScale(1.5).setAlpha(0.95);
+    this.add.image(90, heroY - 190, 'prop_pillar').setOrigin(0.5, 1).setScale(1.1);
+    this.add.image(W - 80, heroY - 150, 'prop_statue').setOrigin(0.5, 1).setScale(1.1).setFlipX(true);
+    this.add.image(150, heroY - 40, 'prop_bush_flower').setOrigin(0.5, 1);
+    this.add.image(W - 160, heroY - 20, 'prop_bush_flower').setOrigin(0.5, 1).setScale(0.8);
+    const portal = this.add.image(W / 2, heroY - 260, 'prop_portal_evac').setOrigin(0.5, 1).setScale(1.5).setAlpha(0.95);
     this.tweens.add({ targets: portal, alpha: 0.75, duration: 1200, yoyo: true, repeat: -1 });
 
     // 顶部货币
@@ -37,13 +41,12 @@ export class MenuScene extends Phaser.Scene {
     txt(this, W / 2, top + 205, '搜 · 打 · 撤', 32, '#fff3d6', '#2b1d14', 6);
 
     // 主角
-    const hero = this.add.image(W / 2, H * 0.66, 'char_hero_idle').setOrigin(0.5, 1).setScale(2.2);
-    this.add.image(W / 2, H * 0.66, 'shadow').setScale(2.4, 2).setDepth(-1);
+    const hero = this.add.image(W / 2, heroY, 'char_hero_idle').setOrigin(0.5, 1).setScale(2.2);
+    this.add.image(W / 2, heroY, 'shadow').setScale(2.4, 2).setDepth(-1);
     this.tweens.add({ targets: hero, scaleY: 2.27, scaleX: 2.15, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-    const lvTag = txt(this, W / 2, H * 0.66 + 34, `探险家 Lv.${d.player.level}`, 30, '#fff', '#2b1d14', 6);
+    const lvTag = txt(this, W / 2, heroY + 34, `探险家 Lv.${d.player.level}`, 30, '#fff', '#2b1d14', 6);
 
     // 区域卡
-    const regY = H * 0.66 + 110;
     panel(this, W / 2, regY, 520, 110, C.cream);
     const reg = d.progress.regions.garden;
     txt(this, W / 2, regY - 20, '萌芽花园遗迹', 38, '#3a6b2a', '#ffffff', 6);
@@ -51,11 +54,10 @@ export class MenuScene extends Phaser.Scene {
     const shrineLock = txt(this, W / 2 + 300, regY, '▶', 40, '#ffffff').setAlpha(0.5).setInteractive();
     shrineLock.on('pointerup', () => this.toast('沉沙神殿：击败咕噜噜 + 角色 Lv5 解锁（制作中）'));
 
-    button(this, W / 2, regY + 135, 440, 110, '出 发 探 险', () => this.startRun(), C.gold, C.goldD, 46);
-    if (d.progress.newbie_protect_left > 0) txt(this, W / 2, regY + 210, `新手保护：还剩 ${d.progress.newbie_protect_left} 局阵亡不丢宝物`, 22, '#d4ffc4', '#2b1d14', 5);
+    button(this, W / 2, btnY, 440, 110, '出 发 探 险', () => this.startRun(), C.gold, C.goldD, 46);
+    if (d.progress.newbie_protect_left > 0) txt(this, W / 2, btnY + 90, `新手保护：还剩 ${d.progress.newbie_protect_left} 局阵亡不丢宝物`, 22, '#d4ffc4', '#2b1d14', 5);
 
     // 底部功能
-    const by = H - sa.bottom - 70;
     const bw = 165;
     button(this, 95, by, bw, 92, '训练营', () => this.openTrain(lvTag), C.blue, C.blueD, 30);
     button(this, 95 + 187, by, bw, 92, '背包工坊', () => this.openWorkshop(), C.purple, C.purpleD, 28);
