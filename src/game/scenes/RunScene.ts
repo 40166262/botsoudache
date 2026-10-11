@@ -335,7 +335,7 @@ export class RunScene extends Phaser.Scene {
     this.particles = this.add.particles(0, 0, 'dot', { lifespan: 300, speed: { min: 140, max: 320 }, scale: { start: 0.9, end: 0.1 }, alpha: { start: 1, end: 0 }, emitting: false }).setDepth(9000);
     this.sparkP = this.add.particles(0, 0, 'spark', { lifespan: 220, speed: { min: 40, max: 120 }, scale: { start: 1, end: 0 }, emitting: false, blendMode: 'ADD' }).setDepth(9001);
     this.heroSh = this.add.image(this.px, this.py, 'shadow').setScale(1.35, 1.2);
-    this.hero = this.add.sprite(this.px, this.py, 'chr_player_idle_01').setOrigin(0.5, 120 / 128).play('hero_idle') as any;
+    this.hero = this.add.sprite(this.px, this.py, 'chr_player_idle_01').setOrigin(0.5, 150 / 160).play('hero_idle') as any;
     this.joyBase = this.add.image(0, 0, 'joy_base').setScrollFactor(0).setDepth(20000).setAlpha(0);
     this.joyKnob = this.add.image(0, 0, 'joy_knob').setScrollFactor(0).setDepth(20001).setAlpha(0);
     // 暗角
@@ -606,7 +606,7 @@ export class RunScene extends Phaser.Scene {
     this.heroLean += (lean - this.heroLean) * (1 - Math.exp(-dt * 16));
     hs.setFlipX(this.facing < 0).setDepth(this.py).setRotation(this.heroLean); if (!this.extracting) hs.setPosition(this.px, this.py);
     const breathe = this.moving ? 1 : 1 + Math.sin(this.now * 3) * 0.015;
-    const HS = 1.25; // 主角显示放大 1.25 倍（碰撞半径不变）
+    const HS = 1; // 美术已出 160 画布的放大版，显示不再缩放（碰撞半径不变）
     hs.setScale(HS / breathe, HS * breathe);
     this.heroSh.setPosition(this.px, this.py + 2).setDepth(this.py - 1);
     if (this.invT > 0) { this.invT -= dt; this.hero.setAlpha(Math.floor(this.invT * 20) % 2 ? 0.45 : 1); } else this.hero.setAlpha(1);

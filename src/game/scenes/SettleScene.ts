@@ -19,7 +19,7 @@ export class SettleScene extends Phaser.Scene {
     const title = r.success ? (r.res.boss_killed ? '通关撤离！' : '撤离成功！') : r.protectedRun ? '新手保护生效' : '探险失败…';
     const t = txt(this, W / 2, top + 40, title, 72, r.success ? '#ffe27a' : r.protectedRun ? '#a8ff9c' : '#ff9c9c', '#2b1d14', 12).setScale(0.3);
     this.tweens.add({ targets: t, scale: 1, duration: 400, ease: 'Back.out' });
-    this.add.image(W / 2, top + 250, r.success ? 'chr_player_win_01' : 'chr_player_dead_01').setScale(1.5);
+    this.add.image(W / 2, top + 250, r.success ? 'chr_player_win_01' : 'chr_player_dead_01').setScale(1.2);
     txt(this, W / 2, top + 370, `第 ${r.res.floor} 层 · 击败 ${r.res.kills} 只 · 用时 ${Math.floor(r.res.time_s / 60)}:${String(r.res.time_s % 60).padStart(2, '0')}`, 26, '#fff', '#2b1d14', 5);
 
     // 物品格：一件件"啪"地落进格子（间隔 150ms）
