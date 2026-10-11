@@ -32,7 +32,7 @@ export class BootScene extends Phaser.Scene {
     // 主角序列帧（美术：跑 8 帧 12fps、待机 6 帧 8fps、受击 2 帧）
     const fr = (n: string, k: number) => Array.from({ length: k }, (_, i) => ({ key: `chr_player_${n}_${String(i + 1).padStart(2, '0')}` }));
     if (!this.anims.exists('hero_run')) {
-      this.anims.create({ key: 'hero_run', frames: fr('run', 8), frameRate: 12, repeat: -1 });
+      this.anims.create({ key: 'hero_run', frames: fr('run', 8), frameRate: 14, repeat: -1 });
       this.anims.create({ key: 'hero_idle', frames: fr('idle', 6), frameRate: 8, repeat: -1 });
       this.anims.create({ key: 'hero_hurt', frames: fr('hurt', 2), frameRate: 12, repeat: -1 });
     }

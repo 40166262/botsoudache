@@ -86,6 +86,8 @@ export class RunScene extends Phaser.Scene {
     this.tutorial = Save.data.progress.total_runs === 0 && Save.data.progress.tutorial_step === 0;
     this.buildMap();
     this.buildFx();
+    // 屏幕外的静态布景不渲染（手机上省 CPU）
+    this.statics = this.children.list.filter((o: any) => o.type === 'Image' && o.scrollFactorX === 1) as Img[];
     this.buildHud();
     this.buildMinimap();
     this.buildInput();
@@ -428,7 +430,7 @@ export class RunScene extends Phaser.Scene {
   }
   treasureRarity(id: string): Rarity { return Cfg.treasure.find((t) => t.id === id)?.rarity ?? 'common'; }
   // ======== 小地图（右上角圆形，以主角为中心，1 格 = 4px） ========
-  mm: any = null;
+  mm: any = null; statics: Img[] = []; cullT = 0;
   buildMinimap() {
     const S = 4 / CELL; const top = this.topH + 8; const cx = this.W - 98, cy = top + 88, R = 72;
     const key = 'mm_bg_' + this.floor;
@@ -553,6 +555,7 @@ export class RunScene extends Phaser.Scene {
     if (!frozen) this.updatePlayer(dt);
     this.updateCamera();
     this.updateMinimap();
+    if ((this.cullT = (this.cullT ?? 0) + 1) % 6 === 0) { const v = this.cameras.main.worldView; const m = 260; for (const o of this.statics) { if (!o.active) continue; o.setVisible(o.x > v.x - m && o.x < v.right + m && o.y > v.y - m && o.y < v.bottom + m * 1.6); } }
     this.updateTimer(dt);
     this.updateSpawns(dt);
     this.rebuildGrid();
@@ -599,7 +602,7 @@ export class RunScene extends Phaser.Scene {
     else if (!this.extracting) {
       const anim = this.hurtFlash > 0 ? 'hero_hurt' : this.moving ? 'hero_run' : 'hero_idle';
       if (hs.anims.currentAnim?.key !== anim) hs.play(anim, true);
-      if (anim === 'hero_run') hs.anims.timeScale = clamp(spdNow / this.spd, 0.6, 1.3);
+      if (anim === 'hero_run') hs.anims.timeScale = clamp(spdNow / (4 * CELL), 0.5, 1.6); // 播放速度跟实际移速走，脚不打滑
     }
     const k01 = clamp(spdNow / this.spd, 0, 1);
     const lean = this.facing * 0.1 * k01 + Math.sin(this.animT * 12 * Math.PI / 4) * 0.035 * k01; // 前倾约 6°，每两步左右摆一次

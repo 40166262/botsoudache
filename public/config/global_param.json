@@ -65,7 +65,7 @@
  "_cell_px": 64,
  "_player_base_hp": 100,
  "_player_base_atk": 10,
- "_player_speed_cells": 3,
+ "_player_speed_cells": 4,
  "_base_crit": 0.05,
  "_crit_mul": 1.5,
  "_slingshot_cd": 0.8,
